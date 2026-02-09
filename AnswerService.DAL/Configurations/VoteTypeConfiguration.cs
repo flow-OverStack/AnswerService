@@ -1,0 +1,21 @@
+using AnswerService.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace AnswerService.DAL.Configurations;
+
+public class VoteTypeConfiguration : IEntityTypeConfiguration<VoteType>
+{
+    public void Configure(EntityTypeBuilder<VoteType> builder)
+    {
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Name).IsRequired();
+        builder.Property(x => x.MinReputationToVote).IsRequired().HasDefaultValue(0);
+        builder.Property(x => x.ReputationChange).IsRequired().HasDefaultValue(0);
+
+        builder.HasMany(x => x.Votes)
+            .WithOne(x => x.VoteType)
+            .HasForeignKey(x => x.VoteTypeId)
+            .HasPrincipalKey(x => x.Id);
+    }
+}

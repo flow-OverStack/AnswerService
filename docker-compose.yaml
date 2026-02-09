@@ -1,0 +1,48 @@
+﻿services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-answer-db
+    ports:
+      - "5436:5432"
+    networks:
+      - pg-network
+      - answer-service-network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${ANSWER_DB_PASSWORD}
+      POSTGRES_DB: answer-service-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  logstash:
+    container_name: logstash-answer-service
+    image: logstash:8.15.0
+    ports:
+      - "5048:5046"
+      - "8002:8080"
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - answer-service-network
+      - flow-overstack_common
+  
+  redis:
+    image: redis:latest
+    container_name: redis-answer-service
+    networks:
+      - answer-service-network
+    ports:
+      - "6381:6379"
+    command: [ "redis-server", "--requirepass", "${REDIS_PASSWORD}" ]
+    volumes:
+      - redis_data:/data
+
+networks:
+  pg-network:
+    external: true
+  answer-service-network:
+  flow-overstack_common:
+    external: true
+volumes:
+  postgres_data:
+  redis_data:
