@@ -46,6 +46,7 @@
         <ProjectReference Include="..\AnswerService.DAL\AnswerService.DAL.csproj"/>
         <ProjectReference Include="..\AnswerService.GrpcClient\AnswerService.GrpcClient.csproj"/>
         <ProjectReference Include="..\AnswerService.Messaging\AnswerService.Messaging.csproj"/>
+        <ProjectReference Include="..\AnswerService.BackgroundJobs\AnswerService.BackgroundJobs.csproj"/>
     </ItemGroup>
 
 </Project>

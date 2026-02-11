@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswerService.Outbox", "Ans
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswerService.GrpcClient", "AnswerService.GrpcClient\AnswerService.GrpcClient.csproj", "{07C9189B-20FE-4B35-AD21-C4309E0ECD7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswerService.BackgroundJobs", "AnswerService.BackgroundJobs\AnswerService.BackgroundJobs.csproj", "{08FA7668-EC1E-4C68-BE64-974D46D7A5A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,7 @@ Global
 		{3DAE9A9A-325C-449F-9D0D-CA6EFDEBF0E4} = {8E0DCE60-D80D-4180-8C15-9035B6BE90CE}
 		{2ADD6E97-C20B-4000-ABDB-68AD52176015} = {8E0DCE60-D80D-4180-8C15-9035B6BE90CE}
 		{07C9189B-20FE-4B35-AD21-C4309E0ECD7D} = {8E0DCE60-D80D-4180-8C15-9035B6BE90CE}
+		{08FA7668-EC1E-4C68-BE64-974D46D7A5A2} = {8E0DCE60-D80D-4180-8C15-9035B6BE90CE}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{173907D0-1196-403E-B146-F7EF24C17DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -78,5 +81,9 @@ Global
 		{07C9189B-20FE-4B35-AD21-C4309E0ECD7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07C9189B-20FE-4B35-AD21-C4309E0ECD7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07C9189B-20FE-4B35-AD21-C4309E0ECD7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08FA7668-EC1E-4C68-BE64-974D46D7A5A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08FA7668-EC1E-4C68-BE64-974D46D7A5A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08FA7668-EC1E-4C68-BE64-974D46D7A5A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08FA7668-EC1E-4C68-BE64-974D46D7A5A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

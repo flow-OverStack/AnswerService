@@ -13,4 +13,13 @@
         <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.1.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Protobuf Include="Protos\UserService.proto" GrpcServices="Client"/>
+        <Protobuf Include="Protos\QuestionService.proto" GrpcServices="Client"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AnswerService.Application\AnswerService.Application.csproj"/>
+        <ProjectReference Include="..\AnswerService.Domain\AnswerService.Domain.csproj"/>
+    </ItemGroup>
 </Project>

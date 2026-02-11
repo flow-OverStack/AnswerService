@@ -8,6 +8,8 @@ using AnswerService.DAL;
 using AnswerService.Messaging.Settings;
 using Asp.Versioning;
 using Confluent.Kafka;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MassTransit.Logging;
 using MassTransit.Monitoring;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -179,6 +181,46 @@ public static class Startup
         knownProxiesString.ToList().ForEach(x => options.KnownProxies.Add(IPAddress.Parse(x)));
 
         app.UseForwardedHeaders(options);
+    }
+
+    /// <summary>
+    ///     Configures Hangfire with PostgreSQL storage and adds it to the service collection.
+    ///     Sets up job retry policies, serialization settings, and logging integration.
+    /// </summary>
+    /// <param name="services">The service collection to which Hangfire services are added.</param>
+    /// <param name="configuration">The configuration containing database connection settings.</param>
+    public static void AddHangfire(this IServiceCollection services, IConfiguration configuration)
+    {
+        const string postgresSqlConnectionName = "PostgresSQL";
+
+        services.AddHangfire(x => x.UsePostgreSqlStorage(options =>
+            {
+                var connectionString = configuration.GetConnectionString(postgresSqlConnectionName);
+                options.UseNpgsqlConnection(connectionString);
+            })
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSerilogLogProvider()
+            .UseFilter(new AutomaticRetryAttribute
+            {
+                Attempts = 10,
+                //5sec, 10 sec, 15sec, 30sec, 1min, 5min, 10min, 1h, 12h, 24h
+                DelaysInSeconds = [5, 10, 15, 30, 60, 300, 600, 1800, 43200, 86400]
+            }));
+
+        services.AddHangfireServer();
+    }
+
+    /// <summary>
+    ///     Enables the Hangfire dashboard in development environments.
+    ///     This provides a web interface for monitoring and managing background jobs.
+    /// </summary>
+    /// <param name="app">The web application to which Hangfire middleware is added.</param>
+    public static void UseHangfire(this WebApplication app)
+    {
+        if (app.Environment.IsDevelopment())
+            app.UseHangfireDashboard();
     }
 
     /// <summary>

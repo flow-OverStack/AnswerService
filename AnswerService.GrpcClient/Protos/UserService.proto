@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "AnswerService.GrpcClient";
+
+service UserService{
+  rpc GetUserWithRolesById(GetUserByIdRequest) returns (GrpcUser);
+  rpc GetUsersByIds(GetUsersByIdsRequest) returns (GetUsersByIdsResponse);
+}
+
+message GetUserByIdRequest{
+  int64 id = 1;
+}
+
+message GetUsersByIdsRequest{
+  repeated int64 ids = 1;
+}
+
+message GetUsersByIdsResponse {
+  repeated GrpcUser users = 1;
+}
+
+message GrpcUser {
+  int64 id = 1;
+  string identity_id = 2;
+  string username = 3;
+  string email = 4;
+  google.protobuf.Timestamp last_login_at = 5;
+  int32 reputation = 8;
+  repeated GrpcRole roles = 9;
+  google.protobuf.Timestamp created_at = 10;
+}
+
+message GrpcRole{
+  int64 id = 1;
+  string name = 2;
+}

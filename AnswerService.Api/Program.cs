@@ -2,6 +2,7 @@ using AnswerService.Api;
 using AnswerService.Api.Middlewares;
 using AnswerService.Api.Settings;
 using AnswerService.Application.DependencyInjection;
+using AnswerService.BackgroundJobs.DependencyInjection;
 using AnswerService.Cache.Settings;
 using AnswerService.DAL.DependencyInjection;
 using AnswerService.GrpcClient.DependencyInjection;
@@ -27,6 +28,7 @@ builder.Services.AddSwagger();
 builder.Services.AddGrpcClients();
 builder.Services.AddMassTransitServices();
 builder.Services.AddOutbox();
+builder.Services.AddHangfire(builder.Configuration);
 
 builder.Host.AddLogging(builder.Configuration);
 
@@ -48,6 +50,8 @@ app.MapControllers();
 app.UseLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfire();
+app.SetupHangfireJobs();
 app.UseOpenTelemetryPrometheusScrapingEndpoint();
 app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
 app.UseForwardedHeaders(builder.Configuration);
