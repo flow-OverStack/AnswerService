@@ -6,6 +6,7 @@ using AnswerService.BackgroundJobs.DependencyInjection;
 using AnswerService.Cache.Settings;
 using AnswerService.DAL.DependencyInjection;
 using AnswerService.GrpcClient.DependencyInjection;
+using AnswerService.GrpcClient.Settings;
 using AnswerService.Messaging.DependencyInjection;
 using AnswerService.Messaging.Settings;
 using AnswerService.Outbox.DependencyInjection;
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<KeycloakSettings>(builder.Configuration.GetSection(nameof(KeycloakSettings)));
 builder.Services.Configure<KafkaSettings>(builder.Configuration.GetSection(nameof(KafkaSettings)));
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection(nameof(RedisSettings)));
+builder.Services.Configure<GrpcHosts>(builder.Configuration.GetSection(nameof(GrpcHosts)));
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();

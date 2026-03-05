@@ -11,6 +11,7 @@ public class AnswerConfiguration : IEntityTypeConfiguration<Answer>
     {
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.Body).IsRequired().HasMaxLength(BusinessRules.BodyMaxLength);
+        builder.Property(x => x.IsAccepted).IsRequired().HasDefaultValue(false);
         builder.Property(x => x.CreatedAt).IsRequired();
         builder.Property(x => x.LastModifiedAt);
         builder.Property(x => x.UserId).IsRequired();

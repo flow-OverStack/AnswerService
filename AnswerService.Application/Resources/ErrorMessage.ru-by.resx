@@ -39,4 +39,16 @@
     <data name="QuestionsNotFound" xml:space="preserve">
         <value>Вопросы не найдены</value>
     </data>
+    <data name="InvalidAnswerBody" xml:space="preserve">
+        <value>Неверное тело ответа</value>
+    </data>
+    <data name="AnswerNotFound" xml:space="preserve">
+        <value>Ответ не найден</value>
+    </data>
+    <data name="OperationForbidden" xml:space="preserve">
+        <value>Операция запрещена</value>
+    </data>
+    <data name="AnswerAlreadyExists" xml:space="preserve">
+        <value>Ответ уже существует</value>
+    </data>
 </root>

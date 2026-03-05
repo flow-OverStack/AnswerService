@@ -39,4 +39,16 @@
     <data name="QuestionsNotFound" xml:space="preserve">
         <value>Questions not found</value>
     </data>
+    <data name="InvalidAnswerBody" xml:space="preserve">
+        <value>Invalid answer body</value>
+    </data>
+    <data name="AnswerNotFound" xml:space="preserve">
+        <value>Answer not found</value>
+    </data>
+    <data name="OperationForbidden" xml:space="preserve">
+        <value>Operation forbidden</value>
+    </data>
+    <data name="AnswerAlreadyExists" xml:space="preserve">
+        <value>Answer already exists</value>
+    </data>
 </root>

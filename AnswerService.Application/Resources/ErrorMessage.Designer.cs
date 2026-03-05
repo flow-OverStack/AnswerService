@@ -60,11 +60,47 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Answer already exists.
+        /// </summary>
+        public static string AnswerAlreadyExists {
+            get {
+                return ResourceManager.GetString("AnswerAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer not found.
+        /// </summary>
+        public static string AnswerNotFound {
+            get {
+                return ResourceManager.GetString("AnswerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal server error.
         /// </summary>
         public static string InternalServerError {
             get {
                 return ResourceManager.GetString("InternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid answer body.
+        /// </summary>
+        public static string InvalidAnswerBody {
+            get {
+                return ResourceManager.GetString("InvalidAnswerBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation forbidden.
+        /// </summary>
+        public static string OperationForbidden {
+            get {
+                return ResourceManager.GetString("OperationForbidden", resourceCulture);
             }
         }
         

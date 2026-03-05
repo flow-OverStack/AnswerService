@@ -11,6 +11,4 @@ public interface IBaseRepository<TEntity> : IStateSaveChanges
     TEntity Update(TEntity entity);
 
     TEntity Remove(TEntity entity);
-
-    Task CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 }
