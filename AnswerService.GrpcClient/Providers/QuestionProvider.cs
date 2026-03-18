@@ -22,23 +22,4 @@ public class QuestionProvider(QuestionService.QuestionServiceClient client, IMap
             return null;
         }
     }
-
-    public async Task<IEnumerable<QuestionDto>> GetByIdsAsync(IEnumerable<long> ids,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var request = new GetQuestionsByIdsRequest();
-            request.Ids.AddRange(ids);
-
-            var response = await client.GetQuestionsByIdsAsync(request, cancellationToken: cancellationToken);
-
-            return response.Questions.Select(mapper.Map<QuestionDto>);
-        }
-        catch (RpcException e) when (e.Status.Detail == ErrorMessage.QuestionNotFound ||
-                                     e.Status.Detail == ErrorMessage.QuestionsNotFound)
-        {
-            return [];
-        }
-    }
 }

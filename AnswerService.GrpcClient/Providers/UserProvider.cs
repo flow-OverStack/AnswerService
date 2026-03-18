@@ -21,23 +21,4 @@ public class UserProvider(UserService.UserServiceClient client, IMapper mapper) 
             return null;
         }
     }
-
-    public async Task<IEnumerable<UserDto>> GetByIdsAsync(IEnumerable<long> ids,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var request = new GetUsersByIdsRequest();
-            request.Ids.AddRange(ids);
-
-            var response = await client.GetUsersByIdsAsync(request, cancellationToken: cancellationToken);
-
-            return response.Users.Select(mapper.Map<UserDto>);
-        }
-        catch (RpcException e) when (e.Status.Detail == ErrorMessage.UserNotFound ||
-                                     e.Status.Detail == ErrorMessage.UsersNotFound)
-        {
-            return [];
-        }
-    }
 }
