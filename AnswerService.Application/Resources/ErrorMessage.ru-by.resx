@@ -51,4 +51,31 @@
     <data name="AnswerAlreadyExists" xml:space="preserve">
         <value>Ответ уже существует</value>
     </data>
+    <data name="AnswerAlreadyAccepted" xml:space="preserve">
+        <value>Ответ уже принят</value>
+    </data>
+    <data name="CannotVoteForOwnPost" xml:space="preserve">
+        <value>Невозможно проголосовать за собственный пост</value>
+    </data>
+    <data name="VoteAlreadyGiven" xml:space="preserve">
+        <value>Голос уже дан</value>
+    </data>
+    <data name="VoteNotFound" xml:space="preserve">
+        <value>Голос не найден</value>
+    </data>
+    <data name="VotesNotFound" xml:space="preserve">
+        <value>Голоса не найдены</value>
+    </data>
+    <data name="VoteTypeNotFound" xml:space="preserve">
+        <value>Тип голоса не найден</value>
+    </data>
+    <data name="VoteTypesNotFound" xml:space="preserve">
+        <value>Типы голоса не найдены</value>
+    </data>
+    <data name="TooLowReputation" xml:space="preserve">
+        <value>Репутация слишком малая</value>
+    </data>
+    <data name="AnswerNotAccepted" xml:space="preserve">
+        <value>Ответ не принят</value>
+    </data>
 </root>

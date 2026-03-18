@@ -60,6 +60,15 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Answer already accepted.
+        /// </summary>
+        public static string AnswerAlreadyAccepted {
+            get {
+                return ResourceManager.GetString("AnswerAlreadyAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Answer already exists.
         /// </summary>
         public static string AnswerAlreadyExists {
@@ -69,11 +78,29 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Answer not accepted.
+        /// </summary>
+        public static string AnswerNotAccepted {
+            get {
+                return ResourceManager.GetString("AnswerNotAccepted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Answer not found.
         /// </summary>
         public static string AnswerNotFound {
             get {
                 return ResourceManager.GetString("AnswerNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Сan&apos;t vote for your own post.
+        /// </summary>
+        public static string CannotVoteForOwnPost {
+            get {
+                return ResourceManager.GetString("CannotVoteForOwnPost", resourceCulture);
             }
         }
         
@@ -123,6 +150,15 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too low reputation.
+        /// </summary>
+        public static string TooLowReputation {
+            get {
+                return ResourceManager.GetString("TooLowReputation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User not found.
         /// </summary>
         public static string UserNotFound {
@@ -137,6 +173,51 @@ namespace AnswerService.Application.Resources {
         public static string UsersNotFound {
             get {
                 return ResourceManager.GetString("UsersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote already given.
+        /// </summary>
+        public static string VoteAlreadyGiven {
+            get {
+                return ResourceManager.GetString("VoteAlreadyGiven", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote not found.
+        /// </summary>
+        public static string VoteNotFound {
+            get {
+                return ResourceManager.GetString("VoteNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Votes not found.
+        /// </summary>
+        public static string VotesNotFound {
+            get {
+                return ResourceManager.GetString("VotesNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote type not found.
+        /// </summary>
+        public static string VoteTypeNotFound {
+            get {
+                return ResourceManager.GetString("VoteTypeNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vote types not found.
+        /// </summary>
+        public static string VoteTypesNotFound {
+            get {
+                return ResourceManager.GetString("VoteTypesNotFound", resourceCulture);
             }
         }
     }

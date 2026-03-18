@@ -51,4 +51,31 @@
     <data name="AnswerAlreadyExists" xml:space="preserve">
         <value>Answer already exists</value>
     </data>
+    <data name="AnswerAlreadyAccepted" xml:space="preserve">
+        <value>Answer already accepted</value>
+    </data>
+    <data name="CannotVoteForOwnPost" xml:space="preserve">
+        <value>Сan't vote for your own post</value>
+    </data>
+    <data name="VoteAlreadyGiven" xml:space="preserve">
+        <value>Vote already given</value>
+    </data>
+    <data name="VoteNotFound" xml:space="preserve">
+        <value>Vote not found</value>
+    </data>
+    <data name="VotesNotFound" xml:space="preserve">
+        <value>Votes not found</value>
+    </data>
+    <data name="VoteTypeNotFound" xml:space="preserve">
+        <value>Vote type not found</value>
+    </data>
+    <data name="VoteTypesNotFound" xml:space="preserve">
+        <value>Vote types not found</value>
+    </data>
+    <data name="TooLowReputation" xml:space="preserve">
+        <value>Too low reputation</value>
+    </data>
+    <data name="AnswerNotAccepted" xml:space="preserve">
+        <value>Answer not accepted</value>
+    </data>
 </root>

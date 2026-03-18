@@ -6,7 +6,8 @@ public enum ErrorCodes
     //User: 11-20,
     //Question: 21-30,
     //Answer: 31-40,
-    //Authorization: 41-50
+    //Authorization: 41-50,
+    //Vote: 51-60
 
     InvalidProperty = 1,
 
@@ -16,6 +17,15 @@ public enum ErrorCodes
 
     AnswerNotFound = 31,
     AnswerAlreadyExists = 32,
+    AnswerAlreadyAccepted = 33,
+    AnswerNotAccepted = 34,
 
-    OperationForbidden = 41
+    OperationForbidden = 41,
+
+    VoteAlreadyGiven = 51,
+    VoteNotFound = 52,
+    VotesNotFound = 53,
+    VoteTypeNotFound = 54,
+    VoteTypesNotFound = 55,
+    CannotVoteForOwnPost = 56
 }

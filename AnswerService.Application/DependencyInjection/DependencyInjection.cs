@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.RegisterBaseResultValidationBehaviors(Assembly.GetExecutingAssembly());
+            cfg.RegisterBaseResultValidationBehaviors(typeof(ValidationBehavior<,>), Assembly.GetExecutingAssembly());
         });
     }
 
@@ -72,12 +72,17 @@ public static class DependencyInjection
         }
     }
 
-    private static void RegisterBaseResultValidationBehaviors(this MediatRServiceConfiguration cfg, Assembly assembly)
+    private static void RegisterBaseResultValidationBehaviors(this MediatRServiceConfiguration cfg,
+        Type behaviorOpenType, Assembly assembly)
     {
         var handlerOpenType = typeof(IRequestHandler<,>);
         var baseResultOpenType = typeof(BaseResult<>);
         var pipelineOpenType = typeof(IPipelineBehavior<,>);
-        var validationBehaviorOpenType = typeof(ValidationBehavior<,>);
+
+        if (!IsValidBaseResultBehavior(behaviorOpenType, pipelineOpenType, baseResultOpenType))
+            throw new ArgumentException(
+                $"The provided behavior type {behaviorOpenType.FullName} is not a valid open generic type implementing `IPipelineBehavior<TRequest, BaseResult<TResponse>>`.",
+                nameof(behaviorOpenType));
 
         var allTypes = assembly.DefinedTypes
             .Select(x => x.AsType())
@@ -100,9 +105,30 @@ public static class DependencyInjection
             // Register:
             // IPipelineBehavior<TRequest, BaseResult<TInner>>  ->  ValidationBehavior<TRequest, TInner>
             var serviceType = pipelineOpenType.MakeGenericType(requestType, responseType);
-            var implementationType = validationBehaviorOpenType.MakeGenericType(requestType, innerResponseType);
+            var implementationType = behaviorOpenType.MakeGenericType(requestType, innerResponseType);
 
             cfg.AddBehavior(serviceType, implementationType);
         }
+    }
+
+    private static bool IsValidBaseResultBehavior(Type behaviorOpenType, Type pipelineOpenType, Type baseResultOpenType)
+    {
+        if (!behaviorOpenType.IsGenericTypeDefinition) return false;
+
+        var typeParams = behaviorOpenType.GetGenericArguments();
+        if (typeParams.Length != 2) return false;
+
+
+        // For an open generic type, GetInterfaces() returns interfaces with
+        // the type parameters still substituted as-is (e.g., IPipelineBehavior<T0, BaseResult<T1>>),
+        // allowing structural shape validation without any concrete types.
+        return behaviorOpenType.GetInterfaces().Any(i =>
+            i.IsGenericType &&
+            i.GetGenericTypeDefinition() == pipelineOpenType &&
+            i.GetGenericArguments() is [var reqArg, var resArg] &&
+            reqArg == typeParams[0] &&
+            resArg.IsGenericType &&
+            resArg.GetGenericTypeDefinition() == baseResultOpenType &&
+            resArg.GetGenericArguments()[0] == typeParams[1]);
     }
 }

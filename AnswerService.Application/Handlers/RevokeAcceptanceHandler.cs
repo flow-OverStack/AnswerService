@@ -3,7 +3,6 @@ using AnswerService.Application.Enum;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Dto.ExternalEntity;
-using AnswerService.Domain.Entities;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
 using AnswerService.Domain.Interfaces.Provider;
@@ -15,13 +14,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnswerService.Application.Handlers;
 
-public class DeleteAnswerHandler(
+public class RevokeAcceptanceHandler(
     IUnitOfWork unitOfWork,
     IEntityProvider<UserDto> userProvider,
+    IEntityProvider<QuestionDto> questionProvider,
     IBaseEventProducer producer,
-    IMapper mapper) : IRequestHandler<DeleteAnswerCommand, BaseResult<AnswerDto>>
+    IMapper mapper) : IRequestHandler<RevokeAcceptanceCommand, BaseResult<AnswerDto>>
 {
-    public async Task<BaseResult<AnswerDto>> Handle(DeleteAnswerCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResult<AnswerDto>> Handle(RevokeAcceptanceCommand request,
+        CancellationToken cancellationToken)
     {
         var initiator = await userProvider.GetByIdAsync(request.InitiatorId, cancellationToken);
         if (initiator == null)
@@ -29,38 +30,40 @@ public class DeleteAnswerHandler(
 
         var answer = await unitOfWork.Answers.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (answer == null)
-            return BaseResult<AnswerDto>.Failure(ErrorMessage.UserNotFound, (int)ErrorCodes.AnswerNotFound);
+            return BaseResult<AnswerDto>.Failure(ErrorMessage.AnswerNotFound, (int)ErrorCodes.AnswerNotFound);
 
-        if (!HasAccess(initiator, answer))
+        var question = await questionProvider.GetByIdAsync(answer.QuestionId, cancellationToken);
+        // Impossible case because of foreign key constraint
+        if (question == null)
+            return BaseResult<AnswerDto>.Failure(ErrorMessage.QuestionNotFound, (int)ErrorCodes.QuestionNotFound);
+
+        if (question.UserId != initiator.Id)
             return BaseResult<AnswerDto>.Failure(ErrorMessage.OperationForbidden, (int)ErrorCodes.OperationForbidden);
+
+        if (!answer.IsAccepted)
+            return BaseResult<AnswerDto>.Failure(ErrorMessage.AnswerNotAccepted, (int)ErrorCodes.AnswerNotAccepted);
+
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            answer.Enabled = false;
+            answer.IsAccepted = false;
             unitOfWork.Answers.Update(answer);
+
             await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityDeleted,
+            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAcceptanceRevoked,
                 cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
         }
-        catch (Exception)
+        catch
         {
             await transaction.RollbackAsync(cancellationToken);
             throw;
         }
 
-
         var answerDto = mapper.Map<AnswerDto>(answer);
         return BaseResult<AnswerDto>.Success(answerDto);
-    }
-
-    private static bool HasAccess(UserDto initiator, Answer toAnswer)
-    {
-        return initiator.Roles.Select(x => x.Name).Contains(nameof(Roles.Admin))
-               || initiator.Roles.Select(x => x.Name).Contains(nameof(Roles.Moderator))
-               || toAnswer.UserId == initiator.Id;
     }
 }

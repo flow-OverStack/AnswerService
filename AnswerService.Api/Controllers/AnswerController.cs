@@ -2,7 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using AnswerService.Api.Controllers.Base;
 using AnswerService.Api.Dto.Answer;
-using AnswerService.Application.Commands;
+using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Results;
 using MediatR;
@@ -89,6 +89,116 @@ public class AnswerController(IMediator mediator) : BaseController
     {
         var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var command = new EditAnswerCommand(answerId, dto.Body, userId);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return HandleBaseResult(result);
+    }
+
+    /// <summary>
+    ///     Accepts an answer
+    /// </summary>
+    /// <param name="answerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <remarks>
+    ///     Request to accept an answer:
+    ///     PATCH {answerId}/accept
+    /// </remarks>
+    [HttpPatch("{answerId:long}/accept")]
+    public async Task<ActionResult<BaseResult<AnswerDto>>> AcceptAnswer(long answerId,
+        CancellationToken cancellationToken)
+    {
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var command = new AcceptAnswerCommand(answerId, userId);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return HandleBaseResult(result);
+    }
+
+    /// <summary>
+    ///     Revokes acceptance of an answer
+    /// </summary>
+    /// <param name="answerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <remarks>
+    ///     Request to revoke acceptance of an answer:
+    ///     PATCH {answerId}/revoke-acceptance
+    /// </remarks>
+    [HttpPatch("{answerId:long}/revoke-acceptance")]
+    public async Task<ActionResult<BaseResult<AnswerDto>>> RevokeAnswerAcceptance(long answerId,
+        CancellationToken cancellationToken)
+    {
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var command = new RevokeAcceptanceCommand(answerId, userId);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return HandleBaseResult(result);
+    }
+
+    /// <summary>
+    ///     Downvotes an answer
+    /// </summary>
+    /// <param name="answerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <remarks>
+    ///     Request to downvote an answer:
+    ///     PATCH {answerId}/downvote
+    /// </remarks>
+    [HttpPatch("{answerId:long}/downvote")]
+    public async Task<ActionResult<BaseResult<VoteAnswerDto>>> DownvoteAnswer(long answerId,
+        CancellationToken cancellationToken)
+    {
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var command = new DownvoteAnswerCommand(answerId, userId);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return HandleBaseResult(result);
+    }
+
+    /// <summary>
+    ///     Upvotes an answer
+    /// </summary>
+    /// <param name="answerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <remarks>
+    ///     Request to upvote an answer:
+    ///     PATCH {answerId}/upvote
+    /// </remarks>
+    [HttpPatch("{answerId:long}/upvote")]
+    public async Task<ActionResult<BaseResult<VoteAnswerDto>>> UpvoteAnswer(long answerId,
+        CancellationToken cancellationToken)
+    {
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var command = new UpvoteAnswerCommand(answerId, userId);
+
+        var result = await mediator.Send(command, cancellationToken);
+
+        return HandleBaseResult(result);
+    }
+
+    /// <summary>
+    ///     Removes vote for an answer
+    /// </summary>
+    /// <param name="answerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <remarks>
+    ///     Request to remove a vote for an answer:
+    ///     DELETE {answerId}/vote
+    /// </remarks>
+    [HttpDelete("{answerId:long}/vote")]
+    public async Task<ActionResult<BaseResult<VoteAnswerDto>>> RemoveVote(long answerId,
+        CancellationToken cancellationToken)
+    {
+        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var command = new RemoveVoteCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
 
