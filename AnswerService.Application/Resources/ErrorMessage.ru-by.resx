@@ -78,4 +78,7 @@
     <data name="AnswerNotAccepted" xml:space="preserve">
         <value>Ответ не принят</value>
     </data>
+    <data name="QuestionAlreadyHasAcceptedAnswer" xml:space="preserve">
+        <value>У этого вопроса уже есть принятый ответ</value>
+    </data>
 </root>

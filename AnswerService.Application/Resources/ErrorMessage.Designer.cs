@@ -132,6 +132,15 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This question already has accepted answer.
+        /// </summary>
+        public static string QuestionAlreadyHasAcceptedAnswer {
+            get {
+                return ResourceManager.GetString("QuestionAlreadyHasAcceptedAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Question not found.
         /// </summary>
         public static string QuestionNotFound {

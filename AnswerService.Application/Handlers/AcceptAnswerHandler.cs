@@ -46,9 +46,19 @@ public class AcceptAnswerHandler(
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            answer.IsAccepted = true;
-            unitOfWork.Answers.Update(answer);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            var updated = await unitOfWork.Answers.GetAll()
+                .Where(x => x.Id == answer.Id && !x.IsAccepted)
+                .Where(x => !unitOfWork.Answers.GetAll()
+                    .Any(a => a.QuestionId == answer.QuestionId && a.IsAccepted))
+                .ExecuteUpdateAsync(s => s.SetProperty(a => a.IsAccepted, true), cancellationToken);
+
+            if (updated == 0)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return BaseResult<AnswerDto>.Failure(ErrorMessage.QuestionAlreadyHasAcceptedAnswer,
+                    (int)ErrorCodes.QuestionAlreadyHasAcceptedAnswer);
+            }
+
 
             await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAccepted,
                 cancellationToken);
