@@ -27,7 +27,7 @@ public class EditAnswerHandler(
 
         var answer = await answerRepository.GetAll().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (answer == null)
-            return BaseResult<AnswerDto>.Failure(ErrorMessage.UserNotFound, (int)ErrorCodes.AnswerNotFound);
+            return BaseResult<AnswerDto>.Failure(ErrorMessage.AnswerNotFound, (int)ErrorCodes.AnswerNotFound);
 
         if (!HasAccess(initiator, answer))
             return BaseResult<AnswerDto>.Failure(ErrorMessage.OperationForbidden, (int)ErrorCodes.OperationForbidden);

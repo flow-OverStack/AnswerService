@@ -59,7 +59,6 @@ public class AcceptAnswerHandler(
                     (int)ErrorCodes.QuestionAlreadyHasAcceptedAnswer);
             }
 
-
             await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAccepted,
                 cancellationToken);
 
