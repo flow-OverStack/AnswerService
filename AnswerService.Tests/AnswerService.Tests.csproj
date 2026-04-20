@@ -7,12 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="FunctionalTests\"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\AnswerService.Application\AnswerService.Application.csproj"/>
         <ProjectReference Include="..\AnswerService.Domain\AnswerService.Domain.csproj"/>
+        <ProjectReference Include="..\AnswerService.Api\AnswerService.Api.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
