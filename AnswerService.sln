@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.env = .env
 		logstash.conf = logstash.conf
 		.github\workflows\sonarqube.yml = .github\workflows\sonarqube.yml
+		.github\workflows\docker.yml = .github\workflows\docker.yml
+		.github\workflows\tests.yml = .github\workflows\tests.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnswerService.Messaging", "AnswerService.Messaging\AnswerService.Messaging.csproj", "{B28D140C-AE08-4B29-9720-7AE01B2AD536}"

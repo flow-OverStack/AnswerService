@@ -49,4 +49,10 @@
         <ProjectReference Include="..\AnswerService.BackgroundJobs\AnswerService.BackgroundJobs.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+    </ItemGroup>
+
 </Project>
