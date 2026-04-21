@@ -9,15 +9,6 @@ namespace AnswerService.Api.Controllers.Base;
 /// <inheritdoc />
 [Consumes(MediaTypeNames.Application.Json)]
 [Route("api/v{version:apiVersion}/[controller]")]
-[ProducesResponseType(StatusCodes.Status200OK)]
-[ProducesResponseType(StatusCodes.Status201Created)]
-[ProducesResponseType(StatusCodes.Status204NoContent)]
-[ProducesResponseType(StatusCodes.Status400BadRequest)]
-[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-[ProducesResponseType(StatusCodes.Status403Forbidden)]
-[ProducesResponseType(StatusCodes.Status404NotFound)]
-[ProducesResponseType(StatusCodes.Status409Conflict)]
-[ProducesResponseType(StatusCodes.Status429TooManyRequests)]
 [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 [ApiController]
 public class BaseController : ControllerBase
@@ -35,9 +26,21 @@ public class BaseController : ControllerBase
 
         // Answer
         { (int)ErrorCodes.AnswerNotFound, StatusCodes.Status404NotFound },
+        { (int)ErrorCodes.AnswerAlreadyExists, StatusCodes.Status409Conflict },
+        { (int)ErrorCodes.AnswerAlreadyAccepted, StatusCodes.Status409Conflict },
+        { (int)ErrorCodes.AnswerNotAccepted, StatusCodes.Status400BadRequest },
+        { (int)ErrorCodes.QuestionAlreadyHasAcceptedAnswer, StatusCodes.Status409Conflict },
 
         // Authorization
-        { (int)ErrorCodes.OperationForbidden, StatusCodes.Status403Forbidden }
+        { (int)ErrorCodes.OperationForbidden, StatusCodes.Status403Forbidden },
+
+        // Votes
+        { (int)ErrorCodes.VoteAlreadyGiven, StatusCodes.Status409Conflict },
+        { (int)ErrorCodes.VoteNotFound, StatusCodes.Status404NotFound },
+        { (int)ErrorCodes.VotesNotFound, StatusCodes.Status404NotFound },
+        { (int)ErrorCodes.VoteTypeNotFound, StatusCodes.Status404NotFound },
+        { (int)ErrorCodes.VoteTypesNotFound, StatusCodes.Status404NotFound },
+        { (int)ErrorCodes.CannotVoteForOwnPost, StatusCodes.Status422UnprocessableEntity }
     };
 
     /// <summary>
@@ -55,17 +58,6 @@ public class BaseController : ControllerBase
         return StatusCode(statusCode, result);
     }
 
-
-    /// <summary>
-    ///     Handles the BaseResult and returns the corresponding ActionResult
-    /// </summary>
-    /// <param name="result"></param>
-    /// <returns></returns>
-    protected ActionResult<BaseResult> HandleBaseResult(BaseResult result)
-    {
-        var statusCode = GetStatusCode(result.IsSuccess, result.ErrorCode, StatusCodes.Status204NoContent);
-        return StatusCode(statusCode, result);
-    }
 
     private static int GetStatusCode(bool isSuccess, int? errorCode, int successStatusCode)
     {

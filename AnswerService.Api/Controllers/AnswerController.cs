@@ -14,10 +14,8 @@ namespace AnswerService.Api.Controllers;
 /// <summary>
 ///     Answer controller
 /// </summary>
-/// <response code="200">If answer was posted/edited/deleted</response>
-/// <response code="400">If answer was not posted/edited/deleted</response>
-/// <response code="403">If the operation was forbidden for user</response>
-/// <response code="500">If internal server error occurred</response>
+/// <response code="401">User is not authenticated</response>
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 [Authorize]
 public class AnswerController(IMediator mediator) : BaseController
 {
@@ -35,7 +33,14 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     "body": string
     ///     }
     /// </remarks>
+    /// <response code="201">Answer was created successfully</response>
+    /// <response code="400">Validation failed (invalid property)</response>
+    /// <response code="404">User or question not found</response>
+    /// <response code="409">Answer already exists for the question by the user</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> PostAnswer(PostAnswerDto dto,
         CancellationToken cancellationToken)
     {
@@ -57,7 +62,13 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to delete an answer:
     ///     DELETE {answerId}
     /// </remarks>
+    /// <response code="200">Answer was deleted successfully</response>
+    /// <response code="403">User is not authorized to delete the answer</response>
+    /// <response code="404">Answer or user not found</response>
     [HttpDelete("{answerId:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> DeleteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
@@ -83,7 +94,15 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     "body": "string"
     ///     }
     /// </remarks>
+    /// <response code="200">Answer was edited successfully</response>
+    /// <response code="400">Validation failed (invalid property)</response>
+    /// <response code="403">User is not authorized to edit the answer</response>
+    /// <response code="404">Answer or user not found</response>
     [HttpPut("{answerId:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> EditAnswer(long answerId, EditAnswerDto dto,
         CancellationToken cancellationToken)
     {
@@ -105,7 +124,15 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to accept an answer:
     ///     PATCH {answerId}/accept
     /// </remarks>
+    /// <response code="200">Answer was accepted successfully</response>
+    /// <response code="403">User is not authorized to accept the answer</response>
+    /// <response code="404">Answer, user, or question not found</response>
+    /// <response code="409">Answer is already accepted or question already has an accepted answer</response>
     [HttpPatch("{answerId:long}/accept")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> AcceptAnswer(long answerId,
         CancellationToken cancellationToken)
     {
@@ -127,7 +154,15 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to revoke acceptance of an answer:
     ///     PATCH {answerId}/revoke-acceptance
     /// </remarks>
+    /// <response code="200">Answer acceptance was revoked successfully</response>
+    /// <response code="403">User is not authorized to revoke acceptance of the answer</response>
+    /// <response code="404">Answer, user, or question not found</response>
+    /// <response code="400">Answer is not accepted</response>
     [HttpPatch("{answerId:long}/revoke-acceptance")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> RevokeAnswerAcceptance(long answerId,
         CancellationToken cancellationToken)
     {
@@ -149,7 +184,15 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to downvote an answer:
     ///     PATCH {answerId}/downvote
     /// </remarks>
+    /// <response code="200">Vote was cast successfully</response>
+    /// <response code="403">User is  voting on their own post or has an insufficient reputation</response>
+    /// <response code="404">User, answer or vote type not found</response>
+    /// <response code="409">User has already voted on this answer</response>
     [HttpPatch("{answerId:long}/downvote")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> DownvoteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
@@ -171,7 +214,15 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to upvote an answer:
     ///     PATCH {answerId}/upvote
     /// </remarks>
+    /// <response code="200">Vote was cast successfully</response>
+    /// <response code="403">User is voting on their own post or has an insufficient reputation</response>
+    /// <response code="404">User, answer or vote type not found</response>
+    /// <response code="409">User has already voted on this answer</response
     [HttpPatch("{answerId:long}/upvote")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> UpvoteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
@@ -193,7 +244,11 @@ public class AnswerController(IMediator mediator) : BaseController
     ///     Request to remove a vote for an answer:
     ///     DELETE {answerId}/vote
     /// </remarks>
+    /// <response code="200">Vote was removed successfully</response>
+    /// <response code="404">User, answer or vote not found</response>
     [HttpDelete("{answerId:long}/vote")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> RemoveVote(long answerId,
         CancellationToken cancellationToken)
     {

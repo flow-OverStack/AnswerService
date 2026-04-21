@@ -59,6 +59,7 @@ app.MapHealthChecks("health", new HealthCheckOptions { ResponseWriter = UIRespon
 app.UseForwardedHeaders(builder.Configuration);
 app.UseCors("DefaultCorsPolicy");
 
+app.UseMiddleware<ClaimsValidationMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
