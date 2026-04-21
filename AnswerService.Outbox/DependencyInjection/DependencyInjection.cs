@@ -6,7 +6,6 @@ using AnswerService.Outbox.Repositories;
 using AnswerService.Outbox.Services;
 using AnswerService.Outbox.TopicProducers;
 using Microsoft.Extensions.DependencyInjection;
-using QuestionService.Outbox.TopicProducers;
 
 namespace AnswerService.Outbox.DependencyInjection;
 

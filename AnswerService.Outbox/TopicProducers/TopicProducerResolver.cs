@@ -1,7 +1,7 @@
 using AnswerService.Outbox.Interfaces.TopicProducer;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace QuestionService.Outbox.TopicProducers;
+namespace AnswerService.Outbox.TopicProducers;
 
 public class TopicProducerResolver(IServiceScopeFactory scopeFactory) : ITopicProducerResolver
 {
