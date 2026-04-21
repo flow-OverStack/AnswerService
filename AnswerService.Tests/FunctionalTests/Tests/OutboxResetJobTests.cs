@@ -1,0 +1,75 @@
+using AnswerService.BackgroundJobs.Jobs;
+using AnswerService.Domain.Interfaces.Repository;
+using AnswerService.Outbox.Enums;
+using AnswerService.Outbox.Messages;
+using AnswerService.Tests.FunctionalTests.Base.Outboxless;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
+
+namespace AnswerService.Tests.FunctionalTests.Tests;
+
+public class OutboxResetJobTests : OutboxlessFunctionalTest
+{
+    public OutboxResetJobTests(OutboxlessFunctionalTestWebAppFactory factory) : base(factory)
+    {
+        using var scope = ServiceProvider.CreateScope();
+        var outboxRepository = scope.ServiceProvider.GetRequiredService<IBaseRepository<OutboxMessage>>();
+        outboxRepository.GetAll().ExecuteDelete();
+    }
+
+    [Trait("Category", "Functional")]
+    [Fact]
+    public async Task RunOutboxResetJob_ShouldBe_Ok()
+    {
+        //Arrange
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var outboxRepository = scope.ServiceProvider.GetRequiredService<IBaseRepository<OutboxMessage>>();
+        var outboxResetJob = ActivatorUtilities.CreateInstance<OutboxResetJob>(scope.ServiceProvider);
+
+        var outboxMessages = new OutboxMessage[]
+        {
+            new()
+            {
+                ProcessedAt = DateTime.UtcNow.AddDays(-8), Type = "TestType1", Content = "TestContent1",
+                Status = OutboxMessageStatus.Processed
+            },
+            new()
+            {
+                ProcessedAt = DateTime.UtcNow.AddDays(-8), Type = "TestType2", Content = "TestContent2", RetryCount = 3,
+                NextRetryAt = DateTime.UtcNow.AddDays(-9), ErrorMessage = "TestError",
+                Status = OutboxMessageStatus.Processed
+            },
+            new()
+            {
+                ProcessedAt = DateTime.UtcNow.AddDays(-1), Type = "TestType3", Content = "TestContent3",
+                Status = OutboxMessageStatus.Processed
+            },
+            new()
+            {
+                ProcessedAt = null, Type = "TestType4", Content = "TestContent4", Status = OutboxMessageStatus.Pending
+            },
+            new()
+            {
+                ProcessedAt = null, Type = "TestType5", Content = "TestContent5",
+                NextRetryAt = DateTime.UtcNow.AddDays(-1), RetryCount = 10, ErrorMessage = "TestError",
+                Status = OutboxMessageStatus.Dead
+            },
+            new()
+            {
+                ProcessedAt = null, Type = "TestType6", Content = "TestContent6",
+                NextRetryAt = DateTime.UtcNow.AddHours(-1), RetryCount = 2, ErrorMessage = "TestError",
+                Status = OutboxMessageStatus.Failed
+            }
+        };
+        outboxMessages.ToList().ForEach(x => outboxRepository.CreateAsync(x));
+        await outboxRepository.SaveChangesAsync();
+
+        //Act
+        await outboxResetJob.RunAsync();
+
+        //Assert
+        var count = await outboxRepository.GetAll().AsNoTracking().CountAsync();
+        Assert.Equal(4, count);
+    }
+}

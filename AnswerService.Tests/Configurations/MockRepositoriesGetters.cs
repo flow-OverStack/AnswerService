@@ -134,12 +134,12 @@ internal static class MockRepositoriesGetters
             {
                 Id = 5,
                 UserId = 4,
-                QuestionId = 0,
-                Body = "Answer 5", // Author: User 0 (non-existent)
+                QuestionId = 0, // Author: User 1
+                Body = "Answer 5",
                 CreatedAt = DateTime.UtcNow,
                 LastModifiedAt = DateTime.UtcNow.AddSeconds(Random.Shared.Next(1, 20)),
                 Votes = GetVotes().Where(x => x.AnswerId == 5).ToList(),
-                IsAccepted = false
+                IsAccepted = true
             }
         }.AsQueryable();
     }

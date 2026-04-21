@@ -15,8 +15,7 @@ internal class TestTopicProducer<T> : ITopicProducer<T> where T : class
         return Task.CompletedTask;
     }
 
-    public Task Produce(T message, IPipe<KafkaSendContext<T>> pipe,
-        CancellationToken cancellationToken = new())
+    public Task Produce(T message, IPipe<KafkaSendContext<T>> pipe, CancellationToken cancellationToken = new())
     {
         return Task.CompletedTask;
     }
@@ -26,8 +25,7 @@ internal class TestTopicProducer<T> : ITopicProducer<T> where T : class
         return Task.CompletedTask;
     }
 
-    public Task Produce(object values, IPipe<KafkaSendContext<T>> pipe,
-        CancellationToken cancellationToken = new())
+    public Task Produce(object values, IPipe<KafkaSendContext<T>> pipe, CancellationToken cancellationToken = new())
     {
         return Task.CompletedTask;
     }

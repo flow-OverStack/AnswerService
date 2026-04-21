@@ -27,8 +27,7 @@ internal class GrpcTestUserService : UserService.UserServiceClient
         return GetUserById(request.Id);
     }
 
-    public override AsyncUnaryCall<GrpcUser>
-        GetUserWithRolesByIdAsync(GetUserByIdRequest request, CallOptions options)
+    public override AsyncUnaryCall<GrpcUser> GetUserWithRolesByIdAsync(GetUserByIdRequest request, CallOptions options)
     {
         return ToAsyncUnaryCall(GetUserById(request.Id));
     }
@@ -38,29 +37,6 @@ internal class GrpcTestUserService : UserService.UserServiceClient
         DateTime? deadline = null, CancellationToken cancellationToken = default)
     {
         return ToAsyncUnaryCall(GetUserById(request.Id));
-    }
-
-    public override GetUsersByIdsResponse GetUsersByIds(GetUsersByIdsRequest request, CallOptions options)
-    {
-        return GetUsersByIds(request.Ids);
-    }
-
-    public override GetUsersByIdsResponse GetUsersByIds(GetUsersByIdsRequest request, Metadata headers = null,
-        DateTime? deadline = null, CancellationToken cancellationToken = default)
-    {
-        return GetUsersByIds(request.Ids);
-    }
-
-    public override AsyncUnaryCall<GetUsersByIdsResponse> GetUsersByIdsAsync(GetUsersByIdsRequest request,
-        CallOptions options)
-    {
-        return ToAsyncUnaryCall(GetUsersByIds(request.Ids));
-    }
-
-    public override AsyncUnaryCall<GetUsersByIdsResponse> GetUsersByIdsAsync(GetUsersByIdsRequest request,
-        Metadata headers = null, DateTime? deadline = null, CancellationToken cancellationToken = default)
-    {
-        return ToAsyncUnaryCall(GetUsersByIds(request.Ids));
     }
 
     private static AsyncUnaryCall<T> ToAsyncUnaryCall<T>(T response)
@@ -85,29 +61,5 @@ internal class GrpcTestUserService : UserService.UserServiceClient
                 new Metadata { { "ErrorCode", ErrorCodes.UserNotFound.ToString() } });
 
         return Mapper.Map<GrpcUser>(user);
-    }
-
-    private static GetUsersByIdsResponse GetUsersByIds(IEnumerable<long> userIds)
-    {
-        var users = Users.Where(x => userIds.Contains(x.Id)).ToList();
-
-        if (users.Count == 0)
-            return userIds.Count() switch
-            {
-                <= 1 => throw new RpcException(new Status(StatusCode.InvalidArgument, ErrorMessage.UserNotFound),
-                    new Metadata { { "ErrorCode", nameof(ErrorCodes.UserNotFound) } }),
-                > 1 => throw new RpcException(new Status(StatusCode.InvalidArgument, ErrorMessage.UsersNotFound),
-                    new Metadata
-                    {
-                        { "ErrorCode", "24" }
-                    }) // We don't have ErrorCode for UsersNotFound because we don't use it in services
-            };
-
-        var grpcUsers = users.Select(Mapper.Map<GrpcUser>);
-
-        var response = new GetUsersByIdsResponse();
-        response.Users.AddRange(grpcUsers);
-
-        return response;
     }
 }

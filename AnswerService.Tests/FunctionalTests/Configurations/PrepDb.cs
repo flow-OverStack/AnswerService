@@ -11,7 +11,6 @@ internal static class PrepDb
     public static void PrepPopulation(this IServiceScope serviceScope)
     {
         var answers = MockRepositoriesGetters.GetAnswers()
-            .Where(x => x.QuestionId != 0)
             .Select(x => new Answer
             {
                 Id = 0,
