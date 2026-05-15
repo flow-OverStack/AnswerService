@@ -7,16 +7,21 @@ using Microsoft.EntityFrameworkCore;
 namespace AnswerService.Application.Handlers.Get.Vote;
 
 public class GetUsersVotesHandler(IBaseRepository<Domain.Entities.Vote> voteRepository)
-    : IRequestHandler<GetUsersVotesCommand, CollectionResult<Domain.Entities.Vote>>
+    : IRequestHandler<GetUsersVotesCommand, CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>
 {
-    public async Task<CollectionResult<Domain.Entities.Vote>> Handle(GetUsersVotesCommand request,
+    public async Task<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>> Handle(
+        GetUsersVotesCommand request,
         CancellationToken cancellationToken)
     {
         var userIds = request.UserIds.ToArray();
-        var votes = await voteRepository.GetAll()
-            .Where(x => userIds.Contains(x.UserId))
-            .ToListAsync(cancellationToken);
 
-        return CollectionResult<Domain.Entities.Vote>.Success(votes);
+        var votes = (await voteRepository.GetAll()
+                .Where(x => userIds.Contains(x.UserId))
+                .GroupBy(x => x.UserId)
+                .ToArrayAsync(cancellationToken))
+            .Select(x => new KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>(x.Key, x.ToArray()))
+            .ToArray();
+
+        return CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>.Success(votes);
     }
 }

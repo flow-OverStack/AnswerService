@@ -7,16 +7,21 @@ using Microsoft.EntityFrameworkCore;
 namespace AnswerService.Application.Handlers.Get.Answer;
 
 public class GetUsersAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRepository)
-    : IRequestHandler<GetUsersAnswersCommand, CollectionResult<Domain.Entities.Answer>>
+    : IRequestHandler<GetUsersAnswersCommand, CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>>
 {
-    public async Task<CollectionResult<Domain.Entities.Answer>> Handle(GetUsersAnswersCommand request,
+    public async Task<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>> Handle(
+        GetUsersAnswersCommand request,
         CancellationToken cancellationToken)
     {
         var userIds = request.UserIds.ToArray();
-        var answers = await answerRepository.GetAll()
-            .Where(x => userIds.Contains(x.UserId))
-            .ToListAsync(cancellationToken);
 
-        return CollectionResult<Domain.Entities.Answer>.Success(answers);
+        var answers = (await answerRepository.GetAll()
+                .Where(x => userIds.Contains(x.UserId))
+                .GroupBy(x => x.UserId)
+                .ToArrayAsync(cancellationToken))
+            .Select(x => new KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>(x.Key, x.ToArray()))
+            .ToArray();
+
+        return CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>.Success(answers);
     }
 }

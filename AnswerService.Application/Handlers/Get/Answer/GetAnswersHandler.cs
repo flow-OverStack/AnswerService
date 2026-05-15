@@ -15,7 +15,7 @@ public class GetAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRep
         var ids = request.Ids.ToArray();
         var answers = await answerRepository.GetAll()
             .Where(x => ids.Contains(x.Id))
-            .ToListAsync(cancellationToken);
+            .ToArrayAsync(cancellationToken);
 
         return CollectionResult<Domain.Entities.Answer>.Success(answers);
     }

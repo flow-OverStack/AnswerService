@@ -4,4 +4,4 @@ using MediatR;
 namespace AnswerService.Application.Commands.GetCommands.Vote;
 
 public record GetVoteTypesVotesCommand(IEnumerable<long> VoteTypeIds)
-    : IRequest<CollectionResult<Domain.Entities.Vote>>;
+    : IRequest<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>;
