@@ -123,6 +123,15 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pagination parametrs are invalid.
+        /// </summary>
+        public static string InvalidPagination {
+            get {
+                return ResourceManager.GetString("InvalidPagination", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation forbidden.
         /// </summary>
         public static string OperationForbidden {

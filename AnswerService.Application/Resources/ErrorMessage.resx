@@ -81,4 +81,7 @@
     <data name="QuestionAlreadyHasAcceptedAnswer" xml:space="preserve">
         <value>This question already has accepted answer</value>
     </data>
+    <data name="InvalidPagination" xml:space="preserve">
+        <value>Pagination parametrs are invalid</value>
+    </data>
 </root>
