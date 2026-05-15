@@ -1,7 +1,7 @@
 using AnswerService.Domain.Results;
 using MediatR;
 
-namespace AnswerService.Application.Commands.GetCommands.Vote;
+namespace AnswerService.Application.Queries.Vote;
 
-public record GetVoteTypesVotesCommand(IEnumerable<long> VoteTypeIds)
+public record GetAnswersVotesQuery(IEnumerable<long> AnswerIds)
     : IRequest<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>;

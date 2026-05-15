@@ -1,7 +1,7 @@
 using AnswerService.Domain.Results;
 using MediatR;
 
-namespace AnswerService.Application.Commands.GetCommands.Answer;
+namespace AnswerService.Application.Queries.Answer;
 
-public record GetUsersAnswersCommand(IEnumerable<long> UserIds)
+public record GetQuestionsAnswersQuery(IEnumerable<long> QuestionIds)
     : IRequest<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>>;

@@ -6,18 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnswerService.Application.Handlers.Get.Answer;
 
-public class GetUsersAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRepository)
-    : IRequestHandler<GetUsersAnswersQuery, CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>>
+public class GetQuestionsAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRepository)
+    : IRequestHandler<GetQuestionsAnswersQuery,
+        CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>>
 {
     public async Task<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>>> Handle(
-        GetUsersAnswersQuery request,
+        GetQuestionsAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        var userIds = request.UserIds.ToArray();
+        var ids = request.QuestionIds.ToArray();
 
         var answers = (await answerRepository.GetAll()
-                .Where(x => userIds.Contains(x.UserId))
-                .GroupBy(x => x.UserId)
+                .Where(x => ids.Contains(x.QuestionId))
+                .GroupBy(x => x.QuestionId)
                 .ToArrayAsync(cancellationToken))
             .Select(x => new KeyValuePair<long, IEnumerable<Domain.Entities.Answer>>(x.Key, x.ToArray()))
             .ToArray();

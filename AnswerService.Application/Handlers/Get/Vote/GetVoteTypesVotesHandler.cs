@@ -1,4 +1,4 @@
-using AnswerService.Application.Commands.GetCommands.Vote;
+using AnswerService.Application.Queries.Vote;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 namespace AnswerService.Application.Handlers.Get.Vote;
 
 public class GetVoteTypesVotesHandler(IBaseRepository<Domain.Entities.Vote> voteRepository)
-    : IRequestHandler<GetVoteTypesVotesCommand, CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>
+    : IRequestHandler<GetVoteTypesVotesQuery, CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>
 {
     public async Task<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>> Handle(
-        GetVoteTypesVotesCommand request,
+        GetVoteTypesVotesQuery request,
         CancellationToken cancellationToken)
     {
         var voteTypeIds = request.VoteTypeIds.ToArray();

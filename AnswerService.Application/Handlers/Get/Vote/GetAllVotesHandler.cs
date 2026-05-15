@@ -1,4 +1,4 @@
-using AnswerService.Application.Commands.GetCommands.Vote;
+using AnswerService.Application.Queries.Vote;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
@@ -6,9 +6,9 @@ using MediatR;
 namespace AnswerService.Application.Handlers.Get.Vote;
 
 public class GetAllVotesHandler(IBaseRepository<Domain.Entities.Vote> voteRepository)
-    : IRequestHandler<GetAllVotesCommand, QueryableResult<Domain.Entities.Vote>>
+    : IRequestHandler<GetAllVotesQuery, QueryableResult<Domain.Entities.Vote>>
 {
-    public Task<QueryableResult<Domain.Entities.Vote>> Handle(GetAllVotesCommand request,
+    public Task<QueryableResult<Domain.Entities.Vote>> Handle(GetAllVotesQuery request,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
