@@ -11,6 +11,6 @@ public class Answer : IEntityId<long>, IAuditable
     public List<Vote> Votes { get; set; }
     public bool Enabled { get; set; } = true;
     public DateTime CreatedAt { get; set; }
-    public DateTime? LastModifiedAt { get; set; }
+    public DateTime LastModifiedAt { get; set; }
     public long Id { get; set; }
 }

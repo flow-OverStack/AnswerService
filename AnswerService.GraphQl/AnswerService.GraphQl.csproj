@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="GraphQL.Server.Ui.Voyager" Version="8.3.3"/>
+        <PackageReference Include="HotChocolate.ApolloFederation" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.Data" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.11"/>
+        <PackageReference Include="HotChocolate.Types.OffsetPagination" Version="15.1.11"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AnswerService.Application\AnswerService.Application.csproj"/>
+        <ProjectReference Include="..\AnswerService.Domain\AnswerService.Domain.csproj"/>
+    </ItemGroup>
+
+</Project>
