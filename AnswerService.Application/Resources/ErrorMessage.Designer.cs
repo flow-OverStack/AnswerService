@@ -96,6 +96,15 @@ namespace AnswerService.Application.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Answers not found.
+        /// </summary>
+        public static string AnswersNotFound {
+            get {
+                return ResourceManager.GetString("AnswersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Сan&apos;t vote for your own post.
         /// </summary>
         public static string CannotVoteForOwnPost {

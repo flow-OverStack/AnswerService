@@ -1,4 +1,6 @@
+using AnswerService.Application.Enum;
 using AnswerService.Application.Queries.VoteType;
+using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
@@ -15,7 +17,16 @@ public class GetVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> voteT
         var voteTypeIds = request.VoteTypeIds.ToArray();
         var voteTypes = await voteTypeRepository.GetAll()
             .Where(x => voteTypeIds.Contains(x.Id))
-            .ToListAsync(cancellationToken);
+            .ToArrayAsync(cancellationToken);
+
+        if (voteTypes.Length == 0)
+            return voteTypeIds.Length switch
+            {
+                <= 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypeNotFound,
+                    (int)ErrorCodes.VoteTypeNotFound),
+                > 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypesNotFound,
+                    (int)ErrorCodes.VoteTypesNotFound)
+            };
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

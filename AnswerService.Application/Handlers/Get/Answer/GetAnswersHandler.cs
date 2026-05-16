@@ -1,4 +1,6 @@
+using AnswerService.Application.Enum;
 using AnswerService.Application.Queries.Answer;
+using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
@@ -16,6 +18,15 @@ public class GetAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRep
         var answers = await answerRepository.GetAll()
             .Where(x => ids.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
+
+        if (answers.Length == 0)
+            return ids.Length switch
+            {
+                <= 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswerNotFound,
+                    (int)ErrorCodes.AnswerNotFound),
+                > 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswersNotFound,
+                    (int)ErrorCodes.AnswersNotFound)
+            };
 
         return CollectionResult<Domain.Entities.Answer>.Success(answers);
     }

@@ -20,6 +20,7 @@ public enum ErrorCodes
     AnswerAlreadyAccepted = 33,
     AnswerNotAccepted = 34,
     QuestionAlreadyHasAcceptedAnswer = 35,
+    AnswersNotFound = 36,
 
     OperationForbidden = 41,
 

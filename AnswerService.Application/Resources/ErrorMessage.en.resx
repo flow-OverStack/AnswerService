@@ -84,4 +84,7 @@
     <data name="InvalidPagination" xml:space="preserve">
         <value>Pagination parametrs are invalid</value>
     </data>
+    <data name="AnswersNotFound" xml:space="preserve">
+        <value>Answers not found</value>
+    </data>
 </root>

@@ -84,4 +84,7 @@
     <data name="InvalidPagination" xml:space="preserve">
         <value>Параметры пагинации невалидны</value>
     </data>
+    <data name="AnswersNotFound" xml:space="preserve">
+        <value>Ответы не найдены</value>
+    </data>
 </root>
