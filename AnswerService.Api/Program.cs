@@ -4,6 +4,7 @@ using AnswerService.Api.Settings;
 using AnswerService.Application.DependencyInjection;
 using AnswerService.Application.Settings;
 using AnswerService.BackgroundJobs.DependencyInjection;
+using AnswerService.Cache.DependencyInjection;
 using AnswerService.Cache.Settings;
 using AnswerService.DAL.DependencyInjection;
 using AnswerService.GraphQl.DependencyInjection;
@@ -39,6 +40,7 @@ builder.Services.AddHangfire(builder.Configuration);
 builder.Host.AddLogging(builder.Configuration);
 
 builder.Services.AddDataAccessLayer(builder.Configuration);
+builder.Services.AddCache();
 builder.Services.AddApplication();
 
 builder.AddOpenTelemetry();

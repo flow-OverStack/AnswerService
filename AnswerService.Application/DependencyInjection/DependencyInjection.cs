@@ -14,8 +14,9 @@ public static class DependencyInjection
     {
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddAutoMapper(typeof(AnswerMapping));
-        services.AddValidators();
         services.AddMediatR();
+        services.AddValidators();
+        services.AddCacheHandlerDecorators(Assembly.GetExecutingAssembly());
     }
 
     private static void AddMediatR(this IServiceCollection services)
@@ -30,6 +31,11 @@ public static class DependencyInjection
     private static void AddValidators(this IServiceCollection services)
     {
         services.AddScopedValidatorsForAssignableValidatedTypes(Assembly.GetExecutingAssembly());
+    }
+
+    private static void AddCacheHandlerDecorators(this IServiceCollection services, Assembly assembly)
+    {
+        services.AddHandlerDecoratorsFromNamespace(assembly, ".Decorators.Cache.");
     }
 
     private static void AddScopedValidatorsForAssignableValidatedTypes(this IServiceCollection services,
@@ -108,6 +114,43 @@ public static class DependencyInjection
             var implementationType = behaviorOpenType.MakeGenericType(requestType, innerResponseType);
 
             cfg.AddBehavior(serviceType, implementationType);
+        }
+    }
+
+    private static void AddHandlerDecoratorsFromNamespace(
+        this IServiceCollection services, Assembly assembly, string namespaceSegment)
+    {
+        var handlerOpenType = typeof(IRequestHandler<,>);
+
+        var allConcreteTypes = assembly.DefinedTypes
+            .Select(x => x.AsType())
+            .Where(x => x is { IsAbstract: false, IsInterface: false })
+            .ToArray();
+
+        var decoratorTypes = allConcreteTypes
+            .Where(x => x.Namespace?.Contains(namespaceSegment) == true)
+            .ToArray();
+
+        var nonDecoratorTypes = allConcreteTypes
+            .Where(x => x.Namespace?.Contains(".Decorators.") == false)
+            .ToArray();
+
+        foreach (var decoratorType in decoratorTypes)
+        {
+            var handlerInterfaces = decoratorType
+                .GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerOpenType)
+                .ToArray();
+
+            foreach (var handlerInterface in handlerInterfaces)
+            {
+                var hasCounterpart = nonDecoratorTypes.Any(t =>
+                    t.GetInterfaces().Any(i => i == handlerInterface));
+
+                if (!hasCounterpart) continue;
+
+                services.Decorate(handlerInterface, decoratorType);
+            }
         }
     }
 

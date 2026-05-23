@@ -28,11 +28,13 @@
         <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="10.0.9"/>
         <PackageReference Include="MediatR" Version="14.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0"/>
+        <PackageReference Include="Scrutor" Version="7.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Handlers\Get\"/>
-        <Folder Include="Queries\"/>
+        <Folder Include="Handlers\Decorators\Cache\"/>
+        <Folder Include="Handlers\Decorators\Cache\Get\VoteType\"/>
+        <Folder Include="Handlers\Decorators\Cache\Get\Vote\"/>
     </ItemGroup>
 
     <ItemGroup>

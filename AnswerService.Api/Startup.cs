@@ -44,7 +44,7 @@ public static class Startup
     private const string AspireDashboardHealthCheckUrlName = "AspireDashboardHealthCheckUrl";
     private const string JaegerHealthCheckUrlName = "JaegerHealthCheckUrl";
     private const string AppStartupUrlLogName = "AppStartupUrlLog";
-    private const string ServiceName = "UserService";
+    private const string ServiceName = "AnswerService";
 
     /// <summary>
     ///     Configures JWT Bearer authentication and authorization services for the application.
