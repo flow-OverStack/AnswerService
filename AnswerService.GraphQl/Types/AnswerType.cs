@@ -34,6 +34,11 @@ public class AnswerType : ObjectType<Answer>
             .ResolveWith<Resolvers>(x => x.GetQuestionByAnswerAsync(default!, default!))
             .Type<NonNullType<QuestionType>>();
 
+        descriptor.Field("reputation")
+            .Type<NonNullType<IntType>>()
+            .Description("The reputation of the answer.")
+            .ResolveWith<Resolvers>(x => x.CalculateReputationAsync(default!, default!, default!, default!));
+
         descriptor.Key(nameof(Answer.Id).LowercaseFirstLetter())
             .ResolveReferenceWith(_ => Resolvers.GetAnswerByIdAsync(default!, default!, default!));
     }
@@ -70,6 +75,17 @@ public class AnswerType : ObjectType<Answer>
             cancellationToken.ThrowIfCancellationRequested();
 
             return new QuestionDto { Id = answer.QuestionId };
+        }
+
+        public async Task<int> CalculateReputationAsync([Parent] Answer answer, GroupVoteDataLoader voteLoader,
+            VoteTypeDataLoader voteTypeLoader, CancellationToken cancellationToken)
+        {
+            var votes = await voteLoader.LoadRequiredAsync(answer.Id, cancellationToken);
+            var voteTypes =
+                await voteTypeLoader.LoadRequiredAsync(votes.Select(x => x.VoteTypeId).ToArray(), cancellationToken);
+
+            var sum = voteTypes.Sum(x => x.ReputationChange);
+            return sum;
         }
     }
 }
