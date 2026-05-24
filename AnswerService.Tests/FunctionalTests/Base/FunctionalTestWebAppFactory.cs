@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Moq;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 using WireMock.Server;
@@ -96,11 +97,15 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
 
             services.RemoveAll<UserService.UserServiceClient>();
             services.AddSingleton<UserService.UserServiceClient, GrpcTestUserService>();
-            services.RemoveAll<GrpcClient.QuestionService.QuestionServiceClient>();
-            services.AddSingleton<GrpcClient.QuestionService.QuestionServiceClient, GrpcTestQuestionService>();
+            services.RemoveAll<QuestionService.QuestionServiceClient>();
+            services.AddSingleton<QuestionService.QuestionServiceClient, GrpcTestQuestionService>();
 
             services.RemoveAll<ITopicProducer<BaseEvent>>();
-            services.AddScoped<ITopicProducer<BaseEvent>, TestTopicProducer<BaseEvent>>();
+            services.AddScoped<ITopicProducer<BaseEvent>>(_ =>
+            {
+                var testProducer = new Mock<ITopicProducer<BaseEvent>>();
+                return testProducer.Object;
+            });
 
             services.RemoveAll<IOptions<RedisSettings>>();
             services.Configure<RedisSettings>(x =>
