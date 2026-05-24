@@ -1,4 +1,40 @@
 ﻿services:
+  answer-service:
+    image: maratkk/flow-overstack_answer-service:latest
+    container_name: answer-service
+    depends_on:
+      - postgres-db
+      - logstash
+    ports:
+      - "8089:8080"
+      - "8090:8081"
+    networks:
+      - answer-service-network
+      - flow-overstack_common
+    environment:
+      ConnectionStrings__PostgresSQL: Server=postgres-db;Port=5432;Database=answer-service-db;User Id=postgres; Password=${ANSWER_DB_PASSWORD}
+      Serilog__WriteTo__2__Args__requestUri: http://logstash:8080
+      AppStartupSettings__CorsAllowedOrigins__0: http://127.0.0.1:5500
+      AppStartupSettings__Ports__GrpcPort: 8081
+      AppStartupSettings__Ports__RestApiPort: 8080
+      AppStartupSettings__Ports__UseHttpsForRestApi: false
+      GrpcHosts__UsersHost: http://user-service:8081
+      GrpcHosts__QuestionsHost: http://question-service:8081
+      KeycloakSettings__Host: http://keycloak:8080
+      KafkaSettings__Host: broker:29092
+      AppStartupSettings__KnownProxies: "[]"
+      AppStartupSettings__TelemetrySettings__AspireDashboardUrl: http://aspire-dashboard:18889
+      AppStartupSettings__TelemetrySettings__JaegerUrl: http://jaeger:4317
+      AppStartupSettings__TelemetrySettings__ElasticSearchUrl: http://elasticsearch:9200
+      AppStartupSettings__TelemetrySettings__LogstashUrl: http://logstash:8080
+      AppStartupSettings__TelemetrySettings__PrometheusUrl: http://prometheus:9090
+      AppStartupSettings__TelemetrySettings__AspireDashboardHealthCheckUrl: http://aspire-dashboard:18888
+      AppStartupSettings__TelemetrySettings__JaegerHealthCheckUrl: http://jaeger:16686
+      AppStartupSettings__TelemetrySettings__UserServiceHealthCheckUrl: http://user-service:8080/health
+      RedisSettings__Host: redis
+      RedisSettings__Port: 6379
+      RedisSettings__Password: ${REDIS_PASSWORD}
+      RedisSettings__TimeToLiveInSeconds: 300
   postgres-db:
     image: postgres:latest
     container_name: postgres-answer-db
