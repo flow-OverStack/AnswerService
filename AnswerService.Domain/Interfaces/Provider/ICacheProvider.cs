@@ -34,13 +34,6 @@ public interface ICacheProvider
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Retrieves the members of a single cached set.
-    /// </summary>
-    /// <param name="key">The key of the set.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests during the operation.</param>
-    Task<IEnumerable<string>> SetStringMembersAsync(string key, CancellationToken cancellationToken = default);
-
-    /// <summary>
     ///     Asynchronously sets multiple string key-value pairs in the cache with a specified time-to-live (TTL).
     /// </summary>
     /// <typeparam name="TValue">The type of the values to be stored. Values are serialized to JSON.</typeparam>
@@ -63,16 +56,6 @@ public interface ICacheProvider
     ///     A collection of deserialized objects of type T, corresponding to the retrieved JSON data.
     /// </returns>
     Task<IEnumerable<T>> GetJsonParsedAsync<T>(IEnumerable<string> keys, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    ///     Asynchronously deletes a key and its associated value from the cache.
-    /// </summary>
-    /// <param name="keys">The keys to be removed from the cache.</param>
-    /// <param name="fireAndForget">If true, sends the command in fire-and-forget mode (no result or error reported).</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests during the operation.</param>
-    /// <returns>The number of keys that were removed from the cache.</returns>
-    Task<long> KeysDeleteAsync(IEnumerable<string> keys, bool fireAndForget = false,
-        CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Marks the specified keys as null in the cache. This operation can help denote keys with explicitly

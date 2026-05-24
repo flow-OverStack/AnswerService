@@ -43,17 +43,6 @@ public class RedisCacheProvider(IDatabase redisDatabase) : ICacheProvider
         return setAddResult.Sum();
     }
 
-    public async Task<IEnumerable<string>> SetStringMembersAsync(string key,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key);
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var values = (await redisDatabase.SetMembersAsync(key)).Select(x => x.ToString());
-        return values;
-    }
-
     public async Task<IEnumerable<KeyValuePair<string, IEnumerable<string>>>> SetsStringMembersAsync(
         IEnumerable<string> keys,
         CancellationToken cancellationToken = default)
@@ -133,18 +122,6 @@ public class RedisCacheProvider(IDatabase redisDatabase) : ICacheProvider
         return jsonResult;
     }
 
-    public Task<long> KeysDeleteAsync(IEnumerable<string> keys, bool fireAndForget = false,
-        CancellationToken cancellationToken = default)
-    {
-        var commandFlags = fireAndForget
-            ? CommandFlags.FireAndForget
-            : CommandFlags.None;
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        return redisDatabase.KeyDeleteAsync(keys.Select(x => (RedisKey)x).ToArray(), commandFlags);
-    }
-
     public Task MarkAsNullAsync(IEnumerable<string> keys, int? timeToLiveInSeconds = null, bool fireAndForget = false,
         CancellationToken cancellationToken = default)
     {
@@ -173,6 +150,17 @@ public class RedisCacheProvider(IDatabase redisDatabase) : ICacheProvider
             .Where(x => x.Exists)
             .Select(x => x.Key)
             .ToHashSet().AsReadOnly();
+    }
+
+    private async Task<IEnumerable<string>> SetStringMembersAsync(string key,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var values = (await redisDatabase.SetMembersAsync(key)).Select(x => x.ToString());
+        return values;
     }
 
     private static string GetNullKey(string key)
