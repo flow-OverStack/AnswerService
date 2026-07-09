@@ -7,7 +7,7 @@ public class OutboxBackgroundServiceTests
 {
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task ExecuteBackgroundJob_ShouldBe_NoException()
+    public async Task ExecuteAsync_NullServiceScopeFactory_SwallowsException()
     {
         //Arrange
         var outboxService =

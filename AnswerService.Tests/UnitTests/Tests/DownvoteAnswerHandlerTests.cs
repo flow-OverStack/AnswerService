@@ -19,7 +19,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_NoExistingVote_ReturnsSuccess()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(3, 3);
@@ -34,7 +34,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_UpvoteGiven()
+    public async Task Handle_ExistingUpvote_ReturnsSuccess()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(2, 3);
@@ -49,7 +49,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 0);
@@ -65,7 +65,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(0, 3);
@@ -81,7 +81,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_CannotVoteForOwnPost()
+    public async Task Handle_OwnAnswer_ReturnsCannotVoteForOwnPost()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 1);
@@ -97,7 +97,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteTypeNotFound()
+    public async Task Handle_NoVoteTypesConfigured_ReturnsVoteTypeNotFound()
     {
         //Arrange
         var downvoteAnswerHandler = new DownvoteAnswerHandler(
@@ -119,7 +119,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_TooLowReputation()
+    public async Task Handle_LowReputationUser_ReturnsTooLowReputation()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 4);
@@ -135,7 +135,7 @@ public class DownvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteAlreadyGiven()
+    public async Task Handle_ExistingDownvote_ReturnsVoteAlreadyGiven()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 3);

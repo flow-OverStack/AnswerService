@@ -17,7 +17,7 @@ public class DeleteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_OwnerDeletesAnswer_ReturnsSuccess()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 1);
@@ -32,7 +32,7 @@ public class DeleteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 0);
@@ -48,7 +48,7 @@ public class DeleteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new DeleteAnswerCommand(0, 1);
@@ -64,7 +64,7 @@ public class DeleteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_OperationForbidden()
+    public async Task Handle_NonOwnerUserId_ReturnsForbidden()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 2);

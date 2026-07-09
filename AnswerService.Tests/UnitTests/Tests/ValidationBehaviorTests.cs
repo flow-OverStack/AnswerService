@@ -30,7 +30,7 @@ public class ValidationBehaviorTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_NoValidators()
+    public async Task Handle_NoValidatorsRegistered_ReturnsSuccess()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([]);
@@ -46,7 +46,7 @@ public class ValidationBehaviorTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_ValidResults()
+    public async Task Handle_ValidCommandWithValidator_ReturnsSuccess()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
@@ -64,7 +64,7 @@ public class ValidationBehaviorTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Failure_With_InvalidResults()
+    public async Task Handle_EmptyAnswerBody_ReturnsInvalidAnswerBody()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([

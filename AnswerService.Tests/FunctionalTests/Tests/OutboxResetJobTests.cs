@@ -20,7 +20,7 @@ public class OutboxResetJobTests : OutboxlessFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task RunOutboxResetJob_ShouldBe_Ok()
+    public async Task RunAsync_MixedProcessedDeadAndFailedMessages_RemovesStaleProcessedMessages()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

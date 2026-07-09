@@ -23,7 +23,7 @@ public class GetAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistingIds_ReturnsAnswers()
     {
         //Arrange
         var query = new GetAnswersQuery([1, 2, 0]);
@@ -38,7 +38,7 @@ public class GetAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_SingleNonExistentId_ReturnsAnswerNotFound()
     {
         //Arrange
         var query = new GetAnswersQuery([0]);
@@ -54,7 +54,7 @@ public class GetAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswersNotFound()
+    public async Task Handle_MultipleNonExistentIds_ReturnsAnswersNotFound()
     {
         //Arrange
         var query = new GetAnswersQuery([0, 0]);

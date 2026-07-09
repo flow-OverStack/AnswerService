@@ -12,7 +12,7 @@ public class GetAllVoteTypesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_VoteTypesExist_ReturnsVoteTypes()
     {
         //Arrange
         var query = new GetAllVoteTypesQuery();

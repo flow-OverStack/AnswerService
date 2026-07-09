@@ -23,7 +23,7 @@ public class GetVoteTypesVotesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistentVoteTypeIds_ReturnsSuccess()
     {
         //Arrange
         var query = new GetVoteTypesVotesQuery([1, 2, 99]);
@@ -38,7 +38,7 @@ public class GetVoteTypesVotesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VotesNotFound()
+    public async Task Handle_NonExistentVoteTypeId_ReturnsVotesNotFound()
     {
         //Arrange
         var query = new GetVoteTypesVotesQuery([99]);

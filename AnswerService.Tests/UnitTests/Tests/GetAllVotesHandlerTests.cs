@@ -12,7 +12,7 @@ public class GetAllVotesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_NoFilter_ReturnsAllVotes()
     {
         //Arrange
         var query = new GetAllVotesQuery();

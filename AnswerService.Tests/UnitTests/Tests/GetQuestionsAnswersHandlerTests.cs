@@ -23,7 +23,7 @@ public class GetQuestionsAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingQuestionIds_ReturnsAnswers()
     {
         //Arrange
         var query = new GetQuestionsAnswersQuery([1, 2, 0]);
@@ -38,7 +38,7 @@ public class GetQuestionsAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswersNotFound()
+    public async Task Handle_NonExistentQuestionId_ReturnsAnswersNotFound()
     {
         //Arrange
         var query = new GetQuestionsAnswersQuery([-1]);

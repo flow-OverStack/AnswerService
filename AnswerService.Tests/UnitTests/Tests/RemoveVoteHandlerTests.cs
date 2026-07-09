@@ -18,7 +18,7 @@ public class RemoveVoteHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingVote_ReturnsSuccess()
     {
         //Arrange
         var command = new RemoveVoteCommand(1, 3);
@@ -33,7 +33,7 @@ public class RemoveVoteHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(1, 0);
@@ -49,7 +49,7 @@ public class RemoveVoteHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(0, 3);
@@ -65,7 +65,7 @@ public class RemoveVoteHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteNotFound()
+    public async Task Handle_NoExistingVote_ReturnsVoteNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(3, 3);

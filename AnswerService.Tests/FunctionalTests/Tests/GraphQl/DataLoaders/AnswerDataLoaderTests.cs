@@ -9,7 +9,7 @@ public class AnswerDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFu
 {
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Success()
+    public async Task Load_ExistingAnswerId_ReturnsAnswer()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
@@ -26,7 +26,7 @@ public class AnswerDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFu
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Null()
+    public async Task Load_NonExistentAnswerId_ReturnsNull()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

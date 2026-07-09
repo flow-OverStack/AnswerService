@@ -24,7 +24,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task DeleteAnswer_ShouldBe_InternalServerError()
+    public async Task DeleteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 1;
@@ -42,7 +42,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task AcceptAnswer_ShouldBe_InternalServerError()
+    public async Task AcceptAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 4;
@@ -61,7 +61,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task RevokeAnswerAcceptance_ShouldBe_InternalServerError()
+    public async Task RevokeAnswerAcceptance_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser3", 3, [
@@ -84,7 +84,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task UpvoteAnswer_ShouldBe_InternalServerError()
+    public async Task UpvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 2;
@@ -103,7 +103,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task DownvoteAnswer_ShouldBe_InternalServerError()
+    public async Task DownvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 2;
@@ -122,7 +122,7 @@ public class ExceptionTests : ExceptionFunctionalTest
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task RemoveVote_ShouldBe_InternalServerError()
+    public async Task RemoveVote_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 3;

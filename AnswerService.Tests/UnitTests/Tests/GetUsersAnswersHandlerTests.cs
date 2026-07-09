@@ -23,7 +23,7 @@ public class GetUsersAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingUserIds_ReturnsSuccess()
     {
         //Arrange
         var query = new GetUsersAnswersQuery([1, 2, 0]);
@@ -38,7 +38,7 @@ public class GetUsersAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswersNotFound()
+    public async Task Handle_NoMatchingUserAnswers_ReturnsAnswersNotFound()
     {
         //Arrange
         var query = new GetUsersAnswersQuery([0]);

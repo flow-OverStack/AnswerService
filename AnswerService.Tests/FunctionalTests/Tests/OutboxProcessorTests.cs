@@ -15,7 +15,7 @@ public class OutboxProcessorTests(ExceptionFunctionalTestWebAppFactory factory) 
 {
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task ProcessOutboxMessages_ShouldBe_Ok()
+    public async Task ProcessOutboxMessagesAsync_KafkaPublishFails_SetsErrorMessage()
     {
         //Arrange
         const long userId = 1;
@@ -42,7 +42,7 @@ public class OutboxProcessorTests(ExceptionFunctionalTestWebAppFactory factory) 
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task ProcessOutboxMessages_ShouldBe_Ok_With_LastRetry()
+    public async Task ProcessOutboxMessagesAsync_RetryExhausted_MarksMessageDead()
     {
         // Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

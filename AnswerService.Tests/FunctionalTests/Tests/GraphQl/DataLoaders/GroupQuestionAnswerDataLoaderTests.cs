@@ -10,7 +10,7 @@ public class GroupQuestionAnswerDataLoaderTests(FunctionalTestWebAppFactory fact
 {
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Success()
+    public async Task Load_ExistingQuestionId_ReturnsGroupedAnswers()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
@@ -26,7 +26,7 @@ public class GroupQuestionAnswerDataLoaderTests(FunctionalTestWebAppFactory fact
 
     [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_NoAnswers()
+    public async Task Load_NonExistentQuestionId_ReturnsEmptyCollection()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

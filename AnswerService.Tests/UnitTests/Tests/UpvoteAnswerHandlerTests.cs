@@ -19,7 +19,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ValidUpvote_ReturnsSuccess()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(3, 3);
@@ -34,7 +34,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_DownvoteGiven()
+    public async Task Handle_ChangingExistingDownvoteToUpvote_ReturnsSuccess()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(1, 3);
@@ -49,7 +49,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(1, 0);
@@ -65,7 +65,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_AnswerDoesNotExist_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(0, 2);
@@ -81,7 +81,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_CannotVoteForOwnPost()
+    public async Task Handle_UserVotesOnOwnAnswer_ReturnsCannotVoteForOwnPost()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(1, 1);
@@ -97,7 +97,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteTypeNotFound()
+    public async Task Handle_VoteTypeMissingFromRepository_ReturnsVoteTypeNotFound()
     {
         //Arrange
         var upvoteAnswerHandler = new UpvoteAnswerHandler(
@@ -120,7 +120,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_TooLowReputation()
+    public async Task Handle_UserReputationBelowUpvoteThreshold_ReturnsTooLowReputation()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(1, 2);
@@ -136,7 +136,7 @@ public class UpvoteAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteAlreadyGiven()
+    public async Task Handle_UserAlreadyUpvotedAnswer_ReturnsVoteAlreadyGiven()
     {
         //Arrange
         var command = new UpvoteAnswerCommand(2, 3);

@@ -23,7 +23,7 @@ public class GetUsersVotesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistentUserIds_ReturnsSuccess()
     {
         //Arrange
         var query = new GetUsersVotesQuery([1, 3, 0]);
@@ -38,7 +38,7 @@ public class GetUsersVotesHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VotesNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsVotesNotFound()
     {
         //Arrange
         var query = new GetUsersVotesQuery([0]);

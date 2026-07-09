@@ -21,7 +21,7 @@ public class AcceptAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(3, 0);
@@ -37,7 +37,7 @@ public class AcceptAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_AnswerDoesNotExist_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(0, 4);
@@ -53,7 +53,7 @@ public class AcceptAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_QuestionNotFound()
+    public async Task Handle_QuestionDoesNotExist_ReturnsQuestionNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(5, 4);
@@ -69,7 +69,7 @@ public class AcceptAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_OperationForbidden()
+    public async Task Handle_InitiatorNotQuestionAuthor_ReturnsOperationForbidden()
     {
         //Arrange
         var command = new AcceptAnswerCommand(1, 1);
@@ -85,7 +85,7 @@ public class AcceptAnswerHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerAlreadyAccepted()
+    public async Task Handle_AnswerAlreadyAcceptedForQuestion_ReturnsAnswerAlreadyAccepted()
     {
         //Arrange
         var command = new AcceptAnswerCommand(2, 3);

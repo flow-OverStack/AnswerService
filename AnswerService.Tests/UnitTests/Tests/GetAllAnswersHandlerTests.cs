@@ -12,7 +12,7 @@ public class GetAllAnswersHandlerTests
 
     [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_NoFilter_ReturnsAllAnswers()
     {
         //Arrange
         var query = new GetAllAnswersQuery();
