@@ -1,4 +1,4 @@
-namespace AnswerService.Tests.Configurations;
+namespace AnswerService.Tests.Support;
 
 internal class TestException() : Exception(ErrorMessage)
 {

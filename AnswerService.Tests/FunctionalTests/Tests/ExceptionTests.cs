@@ -5,7 +5,7 @@ using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Dto.ExternalEntity;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.FunctionalTests.Base.Exception;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Newtonsoft.Json;
 using Xunit;
 using AnswerService.Tests.Traits;

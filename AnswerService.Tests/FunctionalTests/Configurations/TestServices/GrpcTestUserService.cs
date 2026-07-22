@@ -3,7 +3,7 @@ using AnswerService.Application.Resources;
 using AnswerService.Domain.Dto.ExternalEntity;
 using AnswerService.GrpcClient;
 using AnswerService.GrpcClient.Mappings;
-using AnswerService.Tests.Configurations;
+using AnswerService.Tests.TestData;
 using AutoMapper;
 using Grpc.Core;
 
@@ -11,7 +11,7 @@ namespace AnswerService.Tests.FunctionalTests.Configurations.TestServices;
 
 internal class GrpcTestUserService : UserService.UserServiceClient
 {
-    private static readonly IEnumerable<UserDto> Users = MockEntityProvidersGetters.GetUserDtos();
+    private static readonly IEnumerable<UserDto> Users = UserDtoMother.GetUserDtos();
 
     private static readonly IMapper Mapper =
         new MapperConfiguration(cfg => cfg.AddMaps(typeof(GrpcMapping))).CreateMapper();

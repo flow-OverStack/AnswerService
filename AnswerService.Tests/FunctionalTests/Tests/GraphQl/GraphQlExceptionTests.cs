@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 using AnswerService.Application.Resources;
 using AnswerService.Tests.FunctionalTests.Base.Exception.GraphQl;
 using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Newtonsoft.Json;
 using Xunit;
 using AnswerService.Tests.Traits;

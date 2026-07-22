@@ -1,6 +1,6 @@
 using AnswerService.Application.Handlers.Get.Vote;
 using AnswerService.Application.Queries.Vote;
-using AnswerService.Tests.Configurations;
+using AnswerService.Tests.Mocks;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -10,7 +10,7 @@ namespace AnswerService.Tests.UnitTests.Tests;
 public class GetAllVotesHandlerTests
 {
     private readonly GetAllVotesHandler _handler = new(
-        MockRepositoriesGetters.GetMockVoteRepository().Object);
+        RepositoryMocks.GetMockVoteRepository().Object);
 
     [Fact]
     public async Task Handle_NoFilter_ReturnsAllVotes()

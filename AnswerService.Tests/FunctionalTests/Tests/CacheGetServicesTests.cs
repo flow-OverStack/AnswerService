@@ -5,7 +5,7 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Domain.Interfaces.Repository.Cache;
 using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using StackExchange.Redis;

@@ -5,7 +5,7 @@ using AnswerService.Application.Validation;
 using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Interfaces.Validation;
 using AnswerService.Domain.Results;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.UnitTests.Fixtures;
 using MediatR;
 using Moq;
 using Xunit;
@@ -50,7 +50,7 @@ public class ValidationBehaviorTests
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
-            ValidatorConfiguration<IValidatableAnswer>.GetValidator(new AnswerValidator())
+            ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(ValidBody, 1, 1);
 
@@ -67,7 +67,7 @@ public class ValidationBehaviorTests
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
-            ValidatorConfiguration<IValidatableAnswer>.GetValidator(new AnswerValidator())
+            ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(string.Empty, 1, 1);
 

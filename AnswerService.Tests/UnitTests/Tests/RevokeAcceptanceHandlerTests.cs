@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -12,11 +12,11 @@ namespace AnswerService.Tests.UnitTests.Tests;
 public class RevokeAcceptanceHandlerTests
 {
     private readonly RevokeAcceptanceHandler _revokeAcceptanceHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MockEntityProvidersGetters.GetMockQuestionProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        EntityProviderMocks.GetMockQuestionProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
     [Fact]
     public async Task Handle_QuestionAuthorRevokesAcceptedAnswer_ReturnsSuccess()

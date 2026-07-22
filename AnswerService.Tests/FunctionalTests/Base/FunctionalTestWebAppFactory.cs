@@ -7,7 +7,7 @@ using AnswerService.Outbox.Events;
 using AnswerService.Tests.FunctionalTests.Configurations;
 using AnswerService.Tests.FunctionalTests.Configurations.TestServices;
 using AnswerService.Tests.FunctionalTests.Extensions;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

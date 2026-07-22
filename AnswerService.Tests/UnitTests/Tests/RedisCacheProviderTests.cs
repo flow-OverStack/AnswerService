@@ -1,5 +1,5 @@
 using AnswerService.Cache.Providers;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.UnitTests.Fixtures;
 using StackExchange.Redis;
 using Xunit;
 using AnswerService.Tests.Traits;
@@ -14,7 +14,7 @@ public class RedisCacheProviderTests
     {
         //Arrange
         var cache = new RedisCacheProvider(
-            RedisDatabaseConfiguration.GetRedisDatabaseConfiguration());
+            RedisDatabaseFixture.GetRedisDatabaseConfiguration());
         var keysWithValues = new KeyValuePair<string, IEnumerable<string>>[]
         {
             new("key1", ["value11", "value12"]),
@@ -34,7 +34,7 @@ public class RedisCacheProviderTests
     {
         //Arrange
         var cache = new RedisCacheProvider(
-            RedisDatabaseConfiguration.GetFalseResponseRedisDatabaseConfiguration());
+            RedisDatabaseFixture.GetFalseResponseRedisDatabaseConfiguration());
         var keysWithValues = new KeyValuePair<string, object>[]
         {
             new("key1", "value1"),

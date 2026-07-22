@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -12,9 +12,9 @@ namespace AnswerService.Tests.UnitTests.Tests;
 public class EditAnswerHandlerTests
 {
     private readonly EditAnswerHandler _editAnswerHandler = new(
-        MockRepositoriesGetters.GetMockAnswerRepository().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockAnswerRepository().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        MapperFixture.GetMapperConfiguration());
 
     [Fact]
     public async Task Handle_OwnerEditsAnswer_ReturnsSuccess()

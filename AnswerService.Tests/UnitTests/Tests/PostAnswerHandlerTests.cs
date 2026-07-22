@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -12,10 +12,10 @@ namespace AnswerService.Tests.UnitTests.Tests;
 public class PostAnswerHandlerTests
 {
     private readonly PostAnswerHandler _postAnswerHandler = new(
-        MockRepositoriesGetters.GetMockAnswerRepository().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MockEntityProvidersGetters.GetMockQuestionProvider().Object,
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockAnswerRepository().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        EntityProviderMocks.GetMockQuestionProvider().Object,
+        MapperFixture.GetMapperConfiguration());
 
     [Fact]
     public async Task Handle_ValidCommand_ReturnsSuccess()

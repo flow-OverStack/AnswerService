@@ -2,8 +2,8 @@ using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Entities;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -13,11 +13,11 @@ namespace AnswerService.Tests.UnitTests.Tests;
 public class UpvoteAnswerHandlerTests
 {
     private readonly UpvoteAnswerHandler _upvoteAnswerHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockRepositoriesGetters.GetMockVoteTypeRepository().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        RepositoryMocks.GetMockVoteTypeRepository().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
     [Fact]
     public async Task Handle_ValidUpvote_ReturnsSuccess()
@@ -97,11 +97,11 @@ public class UpvoteAnswerHandlerTests
     {
         //Arrange
         var upvoteAnswerHandler = new UpvoteAnswerHandler(
-            MockRepositoriesGetters.GetMockUnitOfWork().Object,
-            MockRepositoriesGetters.GetEmptyMockRepository<VoteType>().Object,
-            MockEntityProvidersGetters.GetMockUserProvider().Object,
-            BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-            MapperConfiguration.GetMapperConfiguration()
+            RepositoryMocks.GetMockUnitOfWork().Object,
+            RepositoryMocks.GetEmptyMockRepository<VoteType>().Object,
+            EntityProviderMocks.GetMockUserProvider().Object,
+            BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+            MapperFixture.GetMapperConfiguration()
         );
         var command = new UpvoteAnswerCommand(1, 4);
 

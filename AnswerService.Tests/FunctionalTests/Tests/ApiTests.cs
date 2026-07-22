@@ -4,7 +4,7 @@ using System.Net.Http.Json;
 using System.Net.Mime;
 using AnswerService.Api.Dto.Answer;
 using AnswerService.Tests.FunctionalTests.Base;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Xunit;
 using AnswerService.Tests.Traits;
 

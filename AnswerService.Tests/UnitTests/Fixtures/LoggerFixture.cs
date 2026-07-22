@@ -1,9 +1,9 @@
 using Moq;
 using Serilog;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
-internal static class LoggerConfiguration
+internal static class LoggerFixture
 {
     public static ILogger GetLogger()
     {

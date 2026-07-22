@@ -1,4 +1,4 @@
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
 using AnswerService.Tests.Traits;
 
@@ -12,7 +12,7 @@ public class OutboxBackgroundServiceTests
     {
         //Arrange
         var outboxService =
-            new TestableOutboxBackgroundService(LoggerConfiguration.GetLogger(), null!); // passing null for exception
+            new TestableOutboxBackgroundService(LoggerFixture.GetLogger(), null!); // passing null for exception
 
         //Act
         await outboxService.ExecuteAsync();

@@ -4,8 +4,8 @@ using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
 using Xunit;
 using AnswerService.Tests.Traits;
@@ -17,10 +17,10 @@ public class GetVoteTypesHandlerTests
 {
     private readonly CacheGetVoteTypesHandler _handler = new(
         new VoteTypeCacheRepository(
-            new RedisCacheProvider(RedisDatabaseConfiguration.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsConfiguration.GetRedisSettingsConfiguration())),
+            new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
         new GetVoteTypesHandler(
-            MockRepositoriesGetters.GetMockVoteTypeRepository().Object)
+            RepositoryMocks.GetMockVoteTypeRepository().Object)
     );
 
     [Fact]
