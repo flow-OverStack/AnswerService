@@ -4,9 +4,11 @@ using AnswerService.Application.Resources;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class DeleteAnswerHandlerTests
 {
     private readonly DeleteAnswerHandler _deleteAnswerHandler = new(
@@ -15,7 +17,6 @@ public class DeleteAnswerHandlerTests
         BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_OwnerDeletesAnswer_ReturnsSuccess()
     {
@@ -30,7 +31,6 @@ public class DeleteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
@@ -46,7 +46,6 @@ public class DeleteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
@@ -62,7 +61,6 @@ public class DeleteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonOwnerUserId_ReturnsForbidden()
     {

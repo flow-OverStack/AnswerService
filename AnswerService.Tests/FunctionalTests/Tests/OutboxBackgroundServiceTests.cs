@@ -7,12 +7,13 @@ using AnswerService.Tests.FunctionalTests.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class OutboxBackgroundServiceTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task ExecuteAsync_PendingOutboxMessage_MarksMessageProcessed()
     {

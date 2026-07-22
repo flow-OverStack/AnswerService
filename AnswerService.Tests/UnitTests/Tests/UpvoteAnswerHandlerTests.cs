@@ -5,9 +5,11 @@ using AnswerService.Domain.Entities;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class UpvoteAnswerHandlerTests
 {
     private readonly UpvoteAnswerHandler _upvoteAnswerHandler = new(
@@ -17,7 +19,6 @@ public class UpvoteAnswerHandlerTests
         BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ValidUpvote_ReturnsSuccess()
     {
@@ -32,7 +33,6 @@ public class UpvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ChangingExistingDownvoteToUpvote_ReturnsSuccess()
     {
@@ -47,7 +47,6 @@ public class UpvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
@@ -63,7 +62,6 @@ public class UpvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_AnswerDoesNotExist_ReturnsAnswerNotFound()
     {
@@ -79,7 +77,6 @@ public class UpvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserVotesOnOwnAnswer_ReturnsCannotVoteForOwnPost()
     {
@@ -95,7 +92,6 @@ public class UpvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_VoteTypeMissingFromRepository_ReturnsVoteTypeNotFound()
     {
@@ -118,7 +114,6 @@ public class UpvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserReputationBelowUpvoteThreshold_ReturnsTooLowReputation()
     {
@@ -134,7 +129,6 @@ public class UpvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserAlreadyUpvotedAnswer_ReturnsVoteAlreadyGiven()
     {

@@ -5,9 +5,11 @@ using AnswerService.Domain.Entities;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class DownvoteAnswerHandlerTests
 {
     private readonly DownvoteAnswerHandler _downvoteAnswerHandler = new(
@@ -17,7 +19,6 @@ public class DownvoteAnswerHandlerTests
         BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NoExistingVote_ReturnsSuccess()
     {
@@ -32,7 +33,6 @@ public class DownvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ExistingUpvote_ReturnsSuccess()
     {
@@ -47,7 +47,6 @@ public class DownvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
@@ -63,7 +62,6 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
@@ -79,7 +77,6 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_OwnAnswer_ReturnsCannotVoteForOwnPost()
     {
@@ -95,7 +92,6 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NoVoteTypesConfigured_ReturnsVoteTypeNotFound()
     {
@@ -117,7 +113,6 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_LowReputationUser_ReturnsTooLowReputation()
     {
@@ -133,7 +128,6 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ExistingDownvote_ReturnsVoteAlreadyGiven()
     {

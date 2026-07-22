@@ -4,9 +4,11 @@ using AnswerService.Application.Resources;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class RevokeAcceptanceHandlerTests
 {
     private readonly RevokeAcceptanceHandler _revokeAcceptanceHandler = new(
@@ -16,7 +18,6 @@ public class RevokeAcceptanceHandlerTests
         BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_QuestionAuthorRevokesAcceptedAnswer_ReturnsSuccess()
     {
@@ -31,7 +32,6 @@ public class RevokeAcceptanceHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
@@ -47,7 +47,6 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
@@ -63,7 +62,6 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_AnswerWithNonExistentQuestion_ReturnsQuestionNotFound()
     {
@@ -79,7 +77,6 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonQuestionAuthorUserId_ReturnsForbidden()
     {
@@ -95,7 +92,6 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UnacceptedAnswer_ReturnsAnswerNotAccepted()
     {

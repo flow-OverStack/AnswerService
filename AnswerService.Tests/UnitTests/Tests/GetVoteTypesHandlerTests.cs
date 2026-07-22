@@ -8,9 +8,11 @@ using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetVoteTypesHandlerTests
 {
     private readonly CacheGetVoteTypesHandler _handler = new(
@@ -21,7 +23,6 @@ public class GetVoteTypesHandlerTests
             MockRepositoriesGetters.GetMockVoteTypeRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ExistingAndNonExistentVoteTypeIds_ReturnsSuccess()
     {
@@ -36,7 +37,6 @@ public class GetVoteTypesHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_SingleNonExistentVoteTypeId_ReturnsVoteTypeNotFound()
     {
@@ -52,7 +52,6 @@ public class GetVoteTypesHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_MultipleNonExistentVoteTypeIds_ReturnsVoteTypesNotFound()
     {

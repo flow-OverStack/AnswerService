@@ -6,13 +6,14 @@ using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
 using AnswerService.Tests.FunctionalTests.Helper;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl;
 
+[FunctionalTest]
 public class GraphQlExceptionTests(GraphQlExceptionFunctionalTestWebAppFactory factory)
     : GraphQlExceptionFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task GetAll_ResolverThrowsException_ReturnsInternalServerError()
     {

@@ -4,9 +4,11 @@ using AnswerService.Application.Resources;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class EditAnswerHandlerTests
 {
     private readonly EditAnswerHandler _editAnswerHandler = new(
@@ -14,7 +16,6 @@ public class EditAnswerHandlerTests
         MockEntityProvidersGetters.GetMockUserProvider().Object,
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_OwnerEditsAnswer_ReturnsSuccess()
     {
@@ -29,7 +30,6 @@ public class EditAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
@@ -45,7 +45,6 @@ public class EditAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
@@ -61,7 +60,6 @@ public class EditAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NonOwnerUserId_ReturnsForbidden()
     {

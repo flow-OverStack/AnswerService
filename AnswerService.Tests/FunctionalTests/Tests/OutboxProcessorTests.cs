@@ -8,12 +8,13 @@ using AnswerService.Tests.FunctionalTests.Base.Exception;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class OutboxProcessorTests(ExceptionFunctionalTestWebAppFactory factory) : ExceptionFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task ProcessOutboxMessagesAsync_KafkaPublishFails_SetsErrorMessage()
     {
@@ -40,7 +41,6 @@ public class OutboxProcessorTests(ExceptionFunctionalTestWebAppFactory factory) 
         Assert.True(unprocessedMessages.All(x => x.ErrorMessage != null));
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task ProcessOutboxMessagesAsync_RetryExhausted_MarksMessageDead()
     {

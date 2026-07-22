@@ -2,15 +2,16 @@ using AnswerService.Application.Handlers.Get.Answer;
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Tests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetAllAnswersHandlerTests
 {
     private readonly GetAllAnswersHandler _handler = new(
         MockRepositoriesGetters.GetMockAnswerRepository().Object);
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NoFilter_ReturnsAllAnswers()
     {

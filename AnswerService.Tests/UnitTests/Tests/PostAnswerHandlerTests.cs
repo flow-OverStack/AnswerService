@@ -4,9 +4,11 @@ using AnswerService.Application.Resources;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class PostAnswerHandlerTests
 {
     private readonly PostAnswerHandler _postAnswerHandler = new(
@@ -15,7 +17,6 @@ public class PostAnswerHandlerTests
         MockEntityProvidersGetters.GetMockQuestionProvider().Object,
         MapperConfiguration.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ValidCommand_ReturnsSuccess()
     {
@@ -30,7 +31,6 @@ public class PostAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
@@ -46,7 +46,6 @@ public class PostAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_QuestionDoesNotExist_ReturnsQuestionNotFound()
     {
@@ -62,7 +61,6 @@ public class PostAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_AnswerAlreadyExistsForUserAndQuestion_ReturnsAnswerAlreadyExists()
     {

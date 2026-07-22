@@ -9,9 +9,11 @@ using AnswerService.Tests.UnitTests.Configurations;
 using MediatR;
 using Moq;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class ValidationBehaviorTests
 {
     private const string ValidBody = "Test Body Test Body Test Body ";
@@ -28,7 +30,6 @@ public class ValidationBehaviorTests
         _mockNext = mock;
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_NoValidatorsRegistered_ReturnsSuccess()
     {
@@ -44,7 +45,6 @@ public class ValidationBehaviorTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ValidCommandWithValidator_ReturnsSuccess()
     {
@@ -62,7 +62,6 @@ public class ValidationBehaviorTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_EmptyAnswerBody_ReturnsInvalidAnswerBody()
     {

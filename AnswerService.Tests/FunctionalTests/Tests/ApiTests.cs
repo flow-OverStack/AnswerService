@@ -6,12 +6,13 @@ using AnswerService.Api.Dto.Answer;
 using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Helper;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class ApiTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task RequestForbiddenResource_InvalidClaims_ReturnsForbidden()
     {
@@ -28,7 +29,6 @@ public class ApiTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(
         Assert.Equal("Invalid claims", body);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task PostAnswer_MissingAuthToken_ReturnsUnauthorized()
     {
@@ -45,7 +45,6 @@ public class ApiTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(
         Assert.NotNull(body);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task RequestSwagger_DefaultRequest_ReturnsOk()
     {

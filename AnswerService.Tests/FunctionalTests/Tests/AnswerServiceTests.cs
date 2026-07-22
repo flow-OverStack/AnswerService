@@ -10,10 +10,12 @@ using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Helper;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
 [Collection(nameof(AnswerServiceTests))]
+[FunctionalTest]
 public class AnswerServiceTests : SequentialFunctionalTest
 {
     public AnswerServiceTests(FunctionalTestWebAppFactory factory) : base(factory)
@@ -24,7 +26,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task PostAnswer_ValidBody_ReturnsCreated()
     {
         //Arrange
@@ -42,7 +43,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task PostAnswer_BodyTooShort_ReturnsBadRequest()
     {
         //Arrange
@@ -61,7 +61,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task DeleteAnswer_ExistingAnswer_ReturnsOk()
     {
         //Arrange
@@ -79,7 +78,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task DeleteAnswer_NonexistentUser_ReturnsNotFound()
     {
         //Arrange
@@ -100,7 +98,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task EditAnswer_ValidBody_ReturnsOk()
     {
         //Arrange
@@ -119,7 +116,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task EditAnswer_WrongOwner_ReturnsForbidden()
     {
         //Arrange
@@ -142,7 +138,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task AcceptAnswer_UnacceptedAnswer_ReturnsOk()
     {
         //Arrange
@@ -160,7 +155,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task AcceptAnswer_QuestionAlreadyHasAcceptedAnswer_ReturnsConflict()
     {
         //Arrange
@@ -182,7 +176,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task RevokeAnswerAcceptance_AcceptedAnswerOwnedByUser_ReturnsOk()
     {
         //Arrange
@@ -202,7 +195,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task RevokeAnswerAcceptance_NonexistentQuestion_ReturnsNotFound()
     {
         //Arrange
@@ -221,7 +213,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task DownvoteAnswer_NotYetVoted_ReturnsOk()
     {
         //Arrange
@@ -239,7 +230,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task DownvoteAnswer_AlreadyVoted_ReturnsConflict()
     {
         //Arrange
@@ -258,7 +248,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task UpvoteAnswer_NotYetVoted_ReturnsOk()
     {
         //Arrange
@@ -276,7 +265,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task UpvoteAnswer_TooLowReputation_ReturnsForbidden()
     {
         //Arrange
@@ -297,7 +285,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task RemoveVote_ExistingVote_ReturnsOk()
     {
         //Arrange
@@ -315,7 +302,6 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
     public async Task RemoveVote_NoExistingVote_ReturnsNotFound()
     {
         //Arrange

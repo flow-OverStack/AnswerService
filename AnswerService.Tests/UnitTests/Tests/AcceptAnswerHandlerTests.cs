@@ -4,9 +4,11 @@ using AnswerService.Application.Resources;
 using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class AcceptAnswerHandlerTests
 {
     private readonly AcceptAnswerHandler _acceptAnswerHandler = new(
@@ -19,7 +21,6 @@ public class AcceptAnswerHandlerTests
     // Methods that reach ExecuteUpdateAsync are not tested here
     // Because ExecuteUpdateAsync cannot be mocked
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
@@ -35,7 +36,6 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_AnswerDoesNotExist_ReturnsAnswerNotFound()
     {
@@ -51,7 +51,6 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_QuestionDoesNotExist_ReturnsQuestionNotFound()
     {
@@ -67,7 +66,6 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_InitiatorNotQuestionAuthor_ReturnsOperationForbidden()
     {
@@ -83,7 +81,6 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_AnswerAlreadyAcceptedForQuestion_ReturnsAnswerAlreadyAccepted()
     {

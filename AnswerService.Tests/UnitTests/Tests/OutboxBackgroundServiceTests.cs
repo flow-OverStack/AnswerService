@@ -1,11 +1,12 @@
 using AnswerService.Tests.UnitTests.Configurations;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class OutboxBackgroundServiceTests
 {
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task ExecuteAsync_NullServiceScopeFactory_SwallowsException()
     {

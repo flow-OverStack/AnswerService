@@ -8,9 +8,11 @@ using AnswerService.Tests.FunctionalTests.Base.Exception;
 using AnswerService.Tests.FunctionalTests.Helper;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class ExceptionTests : ExceptionFunctionalTest
 {
     public ExceptionTests(ExceptionFunctionalTestWebAppFactory factory) : base(factory)
@@ -22,7 +24,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task DeleteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
@@ -40,7 +41,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.StartsWith(ErrorMessage.InternalServerError, result.ErrorMessage);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task AcceptAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
@@ -59,7 +59,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task RevokeAnswerAcceptance_TransactionCommitFails_ReturnsInternalServerError()
     {
@@ -82,7 +81,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task UpvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
@@ -101,7 +99,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task DownvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
@@ -120,7 +117,6 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task RemoveVote_TransactionCommitFails_ReturnsInternalServerError()
     {

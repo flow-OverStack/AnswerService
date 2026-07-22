@@ -8,9 +8,11 @@ using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetAnswersHandlerTests
 {
     private readonly CacheGetAnswersHandler _getAnswersHandler = new(
@@ -21,7 +23,6 @@ public class GetAnswersHandlerTests
             MockRepositoriesGetters.GetMockAnswerRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ExistingAndNonExistingIds_ReturnsAnswers()
     {
@@ -36,7 +37,6 @@ public class GetAnswersHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_SingleNonExistentId_ReturnsAnswerNotFound()
     {
@@ -52,7 +52,6 @@ public class GetAnswersHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_MultipleNonExistentIds_ReturnsAnswersNotFound()
     {

@@ -3,12 +3,13 @@ using AnswerService.Tests.FunctionalTests.Base;
 using GreenDonut;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl.DataLoaders;
 
+[FunctionalTest]
 public class GroupUserVoteDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task Load_ExistingUserId_ReturnsGroupedVotes()
     {
@@ -24,7 +25,6 @@ public class GroupUserVoteDataLoaderTests(FunctionalTestWebAppFactory factory) :
         Assert.Equal(2, result.Length); // User 3 has votes on answers 1 and 2
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
     public async Task Load_NonExistentUserId_ReturnsEmptyCollection()
     {

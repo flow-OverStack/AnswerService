@@ -9,9 +9,11 @@ using AnswerService.Tests.Configurations;
 using AnswerService.Tests.UnitTests.Configurations;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetVotesHandlerTests
 {
     private readonly CacheGetVotesHandler _handler = new(
@@ -22,7 +24,6 @@ public class GetVotesHandlerTests
             MockRepositoriesGetters.GetMockVoteRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_ExistingAndNonExistentVotePairs_ReturnsSuccess()
     {
@@ -37,7 +38,6 @@ public class GetVotesHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_SingleNonExistentVotePair_ReturnsVoteNotFound()
     {
@@ -53,7 +53,6 @@ public class GetVotesHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
     public async Task Handle_MultipleNonExistentVotePairs_ReturnsVotesNotFound()
     {
