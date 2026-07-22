@@ -28,14 +28,14 @@ namespace AnswerService.Tests.FunctionalTests.Base;
 public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _answerServicePostgreSql = new PostgreSqlBuilder()
-        .WithImage("postgres:latest")
+        .WithImage("postgres:17")
         .WithDatabase("answer-service-db")
         .WithUsername("postgres")
         .WithPassword("root")
         .Build();
 
     private readonly RedisContainer _redisContainer = new RedisBuilder()
-        .WithImage("redis:latest")
+        .WithImage("redis:7")
         .Build();
 
     private WireMockServer _wireMockServer = null!;
