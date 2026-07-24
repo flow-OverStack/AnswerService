@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AnswerService.Application.Resources;
 using AnswerService.Application.Settings;
-using AnswerService.Domain.Dto.Page;
+using AnswerService.Domain.Dtos.Pagination;
 using AnswerService.GraphQl.Extensions;
 using AnswerService.GraphQl.Helpers;
 using FluentValidation;
@@ -22,7 +22,7 @@ public class CursorPagingValidationMiddleware(FieldDelegate next)
     private const string OrderArgName = "order";
 
     public async Task InvokeAsync(IMiddlewareContext context,
-        IValidator<CursorPageDto> cursorPageValidator,
+        IValidator<CursorPaginationParams> cursorPageValidator,
         IOptions<PaginationRules> paginationRules)
     {
         var first = context.ArgumentValue<int?>(FirstArgName);
@@ -40,7 +40,7 @@ public class CursorPagingValidationMiddleware(FieldDelegate next)
             last = paginationRules.Value.DefaultPageSize;
 
         var pagination =
-            new CursorPageDto(first, after, before, last, order.ToOrderDto());
+            new CursorPaginationParams(first, after, before, last, order.ToSortOrder());
 
         var validation = await cursorPageValidator.ValidateAsync(pagination, context.RequestAborted);
         if (!validation.IsValid)
