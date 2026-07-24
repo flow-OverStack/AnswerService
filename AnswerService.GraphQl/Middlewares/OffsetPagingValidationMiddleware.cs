@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using AnswerService.Application.Resources;
 using AnswerService.Application.Settings;
-using AnswerService.Domain.Dto.Page;
+using AnswerService.Domain.Dtos.Pagination;
 using AnswerService.GraphQl.Helpers;
 using FluentValidation;
 using HotChocolate.Resolvers;
@@ -17,14 +17,14 @@ public class OffsetPagingValidationMiddleware(FieldDelegate next)
     private const string TakeArgName = "take";
 
     public async Task InvokeAsync(IMiddlewareContext context,
-        IValidator<OffsetPageDto> offsetPageValidator,
+        IValidator<OffsetPaginationParams> offsetPageValidator,
         IOptions<PaginationRules> paginationRules)
     {
         var skip = context.ArgumentValue<int?>(SkipArgName) ?? 0; // Value by default
         var take = context.ArgumentValue<int?>(TakeArgName) ??
                    paginationRules.Value.DefaultPageSize; // Value by default
 
-        var pagination = new OffsetPageDto(skip, take);
+        var pagination = new OffsetPaginationParams(skip, take);
 
         var validation = await offsetPageValidator.ValidateAsync(pagination, context.RequestAborted);
         if (!validation.IsValid)
