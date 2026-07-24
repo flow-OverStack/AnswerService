@@ -3,7 +3,7 @@ using AnswerService.Domain.Interfaces.Validation;
 using AnswerService.Domain.Settings;
 using FluentValidation;
 
-namespace AnswerService.Application.Validation;
+namespace AnswerService.Application.Validators;
 
 public class AnswerValidator : AbstractValidator<IValidatableAnswer>
 {
