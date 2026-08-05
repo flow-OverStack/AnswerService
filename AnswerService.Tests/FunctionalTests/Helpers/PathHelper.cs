@@ -1,4 +1,4 @@
-namespace AnswerService.Tests.FunctionalTests.Helper;
+namespace AnswerService.Tests.FunctionalTests.Helpers;
 
 internal static class PathHelper
 {

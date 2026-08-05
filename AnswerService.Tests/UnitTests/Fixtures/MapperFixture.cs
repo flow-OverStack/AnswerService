@@ -1,9 +1,9 @@
 using AnswerService.Application.Mappings;
 using AutoMapper;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
-internal static class MapperConfiguration
+internal static class MapperFixture
 {
     public static IMapper GetMapperConfiguration()
     {

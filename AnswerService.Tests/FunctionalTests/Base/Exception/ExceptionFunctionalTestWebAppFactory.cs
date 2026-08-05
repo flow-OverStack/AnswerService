@@ -2,7 +2,7 @@ using AnswerService.DAL.Repositories;
 using AnswerService.Domain.Interfaces.Database;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Outbox.Interfaces.TopicProducer;
-using AnswerService.Tests.Configurations;
+using AnswerService.Tests.Support;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

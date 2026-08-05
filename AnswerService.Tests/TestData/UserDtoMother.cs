@@ -1,65 +1,10 @@
 using AnswerService.Domain.Dto.ExternalEntity;
-using AnswerService.Domain.Interfaces.Provider;
-using Moq;
 
-namespace AnswerService.Tests.Configurations;
+namespace AnswerService.Tests.TestData;
 
-internal static class MockEntityProvidersGetters
+internal static class UserDtoMother
 {
     public const int MinReputation = 1;
-
-    public static IMock<IEntityProvider<QuestionDto>> GetMockQuestionProvider()
-    {
-        var mockProvider = new Mock<IEntityProvider<QuestionDto>>();
-
-        mockProvider.Setup(x => x.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((long questionId, CancellationToken _) =>
-                GetQuestionDtos().FirstOrDefault(x => x.Id == questionId));
-        return mockProvider;
-    }
-
-    public static IMock<IEntityProvider<UserDto>> GetMockUserProvider()
-    {
-        var mockProvider = new Mock<IEntityProvider<UserDto>>();
-
-        mockProvider.Setup(x => x.GetByIdAsync(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((long userId, CancellationToken _) => GetUserDtos().FirstOrDefault(x => x.Id == userId));
-        return mockProvider;
-    }
-
-    public static IQueryable<QuestionDto> GetQuestionDtos()
-    {
-        return new QuestionDto[]
-        {
-            new()
-            {
-                Id = 1,
-                Title = "Test question 1",
-                Body = "Test question body 1",
-                UserId = 3,
-                CreatedAt = DateTime.UtcNow,
-                LastModifiedAt = DateTime.UtcNow.AddSeconds(Random.Shared.Next(1, 20))
-            },
-            new()
-            {
-                Id = 2,
-                Title = "Test question 2",
-                Body = "Test question body 2",
-                UserId = 2,
-                CreatedAt = DateTime.UtcNow,
-                LastModifiedAt = DateTime.UtcNow.AddSeconds(Random.Shared.Next(1, 20))
-            },
-            new()
-            {
-                Id = 3,
-                Title = "Test question 3",
-                Body = "Test question body 3",
-                UserId = 1,
-                CreatedAt = DateTime.UtcNow,
-                LastModifiedAt = DateTime.UtcNow.AddSeconds(Random.Shared.Next(1, 20))
-            }
-        }.AsQueryable();
-    }
 
     public static IQueryable<UserDto> GetUserDtos()
     {
@@ -111,8 +56,6 @@ internal static class MockEntityProvidersGetters
             }
         }.AsQueryable();
     }
-
-    // Get entity dtos methods
 
     private static RoleDto GetRoleUser()
     {

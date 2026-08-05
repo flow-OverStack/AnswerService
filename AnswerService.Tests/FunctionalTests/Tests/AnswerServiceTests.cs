@@ -7,13 +7,15 @@ using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Dto.ExternalEntity;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.FunctionalTests.Base;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
 [Collection(nameof(AnswerServiceTests))]
+[FunctionalTest]
 public class AnswerServiceTests : SequentialFunctionalTest
 {
     public AnswerServiceTests(FunctionalTestWebAppFactory factory) : base(factory)
@@ -24,8 +26,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task PostAnswer_ShouldBe_Created()
+    public async Task PostAnswer_ValidBody_ReturnsCreated()
     {
         //Arrange
         var dto = new PostAnswerDto(3, "Test Body Test Body Test Body ");
@@ -42,8 +43,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task PostAnswer_ShouldBe_BadRequest()
+    public async Task PostAnswer_BodyTooShort_ReturnsBadRequest()
     {
         //Arrange
         var dto = new PostAnswerDto(3, "Too short body");
@@ -61,8 +61,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task DeleteAnswer_ShouldBe_Ok()
+    public async Task DeleteAnswer_ExistingAnswer_ReturnsOk()
     {
         //Arrange
         const long answerId = 1;
@@ -79,8 +78,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task DeleteAnswer_ShouldBe_NotFound()
+    public async Task DeleteAnswer_NonexistentUser_ReturnsNotFound()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("nonexistentuser", 0, [new RoleDto { Name = "User" }]);
@@ -100,8 +98,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task EditAnswer_ShouldBe_Ok()
+    public async Task EditAnswer_ValidBody_ReturnsOk()
     {
         //Arrange
         const long answerId = 1;
@@ -119,8 +116,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task EditAnswer_ShouldBe_Forbidden()
+    public async Task EditAnswer_WrongOwner_ReturnsForbidden()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser2", 2, [new RoleDto { Name = "User" }]);
@@ -142,8 +138,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task AcceptAnswer_ShouldBe_Ok()
+    public async Task AcceptAnswer_UnacceptedAnswer_ReturnsOk()
     {
         //Arrange
         const long answerId = 4;
@@ -160,8 +155,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task AcceptAnswer_ShouldBe_Conflict()
+    public async Task AcceptAnswer_QuestionAlreadyHasAcceptedAnswer_ReturnsConflict()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser3", 3, [new RoleDto { Name = "User" }]);
@@ -182,8 +176,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task RevokeAnswerAcceptance_ShouldBe_Ok()
+    public async Task RevokeAnswerAcceptance_AcceptedAnswerOwnedByUser_ReturnsOk()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser2", 2, [new RoleDto { Name = "User" }]);
@@ -202,8 +195,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task RevokeAnswerAcceptance_ShouldBe_NotFound()
+    public async Task RevokeAnswerAcceptance_NonexistentQuestion_ReturnsNotFound()
     {
         //Arrange
         const long answerId = 5;
@@ -221,8 +213,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task DownvoteAnswer_ShouldBe_Ok()
+    public async Task DownvoteAnswer_NotYetVoted_ReturnsOk()
     {
         //Arrange
         const long answerId = 2;
@@ -239,8 +230,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task DownvoteAnswer_ShouldBe_Conflict()
+    public async Task DownvoteAnswer_AlreadyVoted_ReturnsConflict()
     {
         //Arrange
         const long answerId = 4;
@@ -258,8 +248,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task UpvoteAnswer_ShouldBe_Ok()
+    public async Task UpvoteAnswer_NotYetVoted_ReturnsOk()
     {
         //Arrange
         const long answerId = 2;
@@ -276,8 +265,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task UpvoteAnswer_ShouldBe_Forbidden()
+    public async Task UpvoteAnswer_TooLowReputation_ReturnsForbidden()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser2", 2, [new RoleDto { Name = "User" }]);
@@ -297,8 +285,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task RemoveVote_ShouldBe_Ok()
+    public async Task RemoveVote_ExistingVote_ReturnsOk()
     {
         //Arrange
         const long answerId = 3;
@@ -315,8 +302,7 @@ public class AnswerServiceTests : SequentialFunctionalTest
     }
 
     [Fact]
-    [Trait("Category", "Functional")]
-    public async Task RemoveVote_ShouldBe_NotFound()
+    public async Task RemoveVote_NoExistingVote_ReturnsNotFound()
     {
         //Arrange
         const long answerId = 2;

@@ -1,24 +1,25 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class RemoveVoteHandlerTests
 {
     private readonly RemoveVoteHandler _removeVoteHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration()
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration()
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingVote_ReturnsSuccess()
     {
         //Arrange
         var command = new RemoveVoteCommand(1, 3);
@@ -31,9 +32,8 @@ public class RemoveVoteHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(1, 0);
@@ -47,9 +47,8 @@ public class RemoveVoteHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(0, 3);
@@ -63,9 +62,8 @@ public class RemoveVoteHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteNotFound()
+    public async Task Handle_NoExistingVote_ReturnsVoteNotFound()
     {
         //Arrange
         var command = new RemoveVoteCommand(3, 3);

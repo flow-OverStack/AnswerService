@@ -4,26 +4,27 @@ using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetVoteTypesHandlerTests
 {
     private readonly CacheGetVoteTypesHandler _handler = new(
         new VoteTypeCacheRepository(
-            new RedisCacheProvider(RedisDatabaseConfiguration.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsConfiguration.GetRedisSettingsConfiguration())),
+            new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
         new GetVoteTypesHandler(
-            MockRepositoriesGetters.GetMockVoteTypeRepository().Object)
+            RepositoryMocks.GetMockVoteTypeRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistentVoteTypeIds_ReturnsSuccess()
     {
         //Arrange
         var query = new GetVoteTypesQuery([1, 2, 0]);
@@ -36,9 +37,8 @@ public class GetVoteTypesHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteTypeNotFound()
+    public async Task Handle_SingleNonExistentVoteTypeId_ReturnsVoteTypeNotFound()
     {
         //Arrange
         var query = new GetVoteTypesQuery([0]);
@@ -52,9 +52,8 @@ public class GetVoteTypesHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteTypesNotFound()
+    public async Task Handle_MultipleNonExistentVoteTypeIds_ReturnsVoteTypesNotFound()
     {
         //Arrange
         var query = new GetVoteTypesQuery([0, 0]);

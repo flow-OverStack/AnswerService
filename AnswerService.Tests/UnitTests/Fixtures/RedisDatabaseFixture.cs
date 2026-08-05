@@ -1,9 +1,9 @@
 using Moq;
 using StackExchange.Redis;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
-internal static class RedisDatabaseConfiguration
+internal static class RedisDatabaseFixture
 {
     public static IDatabase GetRedisDatabaseConfiguration()
     {

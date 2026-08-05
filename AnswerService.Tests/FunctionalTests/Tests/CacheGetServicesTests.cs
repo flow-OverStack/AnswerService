@@ -5,23 +5,24 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Domain.Interfaces.Repository.Cache;
 using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
     // Only functional tests are provided for cache services' success scenarios.
     // This is because cache data mirrors the database, and manually copying test DB data into multiple cache keys/values is impractical and confusing.
     // In functional tests, data is automatically copied from the DB to the cache as needed, following all key/value rules.
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAnswerById_ShouldBe_Ok()
+    public async Task GetAnswerById_CacheHit_ReturnsOk()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestAnswerByIdQuery(2) };
@@ -40,9 +41,8 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         Assert.NotNull(result!.Data.Answer.Votes);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAnswerById_ShouldBe_Null()
+    public async Task GetAnswerById_NonexistentAnswerCached_ReturnsNull()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestAnswerByIdQuery(0) };
@@ -60,9 +60,8 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         Assert.Null(result!.Data.Answer);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAnswerById_ShouldBe_Ok_With_WrongEntryInCache()
+    public async Task GetAnswerById_CorruptedCacheEntry_ReturnsOk()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
@@ -85,9 +84,8 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         Assert.All(result.Data.Answer.Votes.Select(x => x.VoteType), Assert.NotNull);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetGroupedById_ShouldBe_Null()
+    public async Task GetGroupedById_AnswerVotesCachedAsNull_ReturnsEmpty()
     {
         //Arrange
         const long answerId = 0;

@@ -3,14 +3,15 @@ using AnswerService.Tests.FunctionalTests.Base;
 using GreenDonut;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl.DataLoaders;
 
+[FunctionalTest]
 public class GroupVoteTypeVoteDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Success()
+    public async Task Load_ExistingVoteTypeId_ReturnsGroupedVotes()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
@@ -24,9 +25,8 @@ public class GroupVoteTypeVoteDataLoaderTests(FunctionalTestWebAppFactory factor
         Assert.Equal(4, result.Length);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_NoViews()
+    public async Task Load_NonExistentVoteTypeId_ReturnsEmptyCollection()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

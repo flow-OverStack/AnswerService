@@ -5,26 +5,27 @@ using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
 using AnswerService.Domain.Dto.Vote;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetVotesHandlerTests
 {
     private readonly CacheGetVotesHandler _handler = new(
         new VoteCacheRepository(
-            new RedisCacheProvider(RedisDatabaseConfiguration.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsConfiguration.GetRedisSettingsConfiguration())),
+            new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
         new GetVotesHandler(
-            MockRepositoriesGetters.GetMockVoteRepository().Object)
+            RepositoryMocks.GetMockVoteRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistentVotePairs_ReturnsSuccess()
     {
         //Arrange
         var query = new GetVotesQuery([new VoteDto(3, 2), new VoteDto(1, 3), new VoteDto(0, 0)]);
@@ -37,9 +38,8 @@ public class GetVotesHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteNotFound()
+    public async Task Handle_SingleNonExistentVotePair_ReturnsVoteNotFound()
     {
         //Arrange
         var query = new GetVotesQuery([new VoteDto(0, 0)]);
@@ -53,9 +53,8 @@ public class GetVotesHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VotesNotFound()
+    public async Task Handle_MultipleNonExistentVotePairs_ReturnsVotesNotFound()
     {
         //Arrange
         var query = new GetVotesQuery([new VoteDto(0, 0), new VoteDto(0, 1)]);

@@ -5,12 +5,14 @@ using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Dto.ExternalEntity;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.FunctionalTests.Base.Exception;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class ExceptionTests : ExceptionFunctionalTest
 {
     public ExceptionTests(ExceptionFunctionalTestWebAppFactory factory) : base(factory)
@@ -22,9 +24,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task DeleteAnswer_ShouldBe_InternalServerError()
+    public async Task DeleteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 1;
@@ -40,9 +41,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.StartsWith(ErrorMessage.InternalServerError, result.ErrorMessage);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task AcceptAnswer_ShouldBe_InternalServerError()
+    public async Task AcceptAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 4;
@@ -59,9 +59,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task RevokeAnswerAcceptance_ShouldBe_InternalServerError()
+    public async Task RevokeAnswerAcceptance_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         var token = TokenHelper.GetRsaToken("testuser3", 3, [
@@ -82,9 +81,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task UpvoteAnswer_ShouldBe_InternalServerError()
+    public async Task UpvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 2;
@@ -101,9 +99,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task DownvoteAnswer_ShouldBe_InternalServerError()
+    public async Task DownvoteAnswer_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 2;
@@ -120,9 +117,8 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task RemoveVote_ShouldBe_InternalServerError()
+    public async Task RemoveVote_TransactionCommitFails_ReturnsInternalServerError()
     {
         //Arrange
         const long answerId = 3;

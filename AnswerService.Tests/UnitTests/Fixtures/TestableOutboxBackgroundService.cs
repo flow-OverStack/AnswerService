@@ -2,7 +2,7 @@ using AnswerService.Outbox;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
 internal class TestableOutboxBackgroundService(ILogger logger, IServiceScopeFactory scopeFactory)
     : OutboxBackgroundService(logger, scopeFactory)

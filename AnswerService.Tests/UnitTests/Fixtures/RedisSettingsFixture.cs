@@ -1,8 +1,8 @@
 using AnswerService.Cache.Settings;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
-internal static class RedisSettingsConfiguration
+internal static class RedisSettingsFixture
 {
     public static RedisSettings GetRedisSettingsConfiguration()
     {

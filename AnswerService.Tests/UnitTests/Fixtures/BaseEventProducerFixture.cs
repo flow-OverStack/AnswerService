@@ -2,9 +2,9 @@ using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
 using Moq;
 
-namespace AnswerService.Tests.UnitTests.Configurations;
+namespace AnswerService.Tests.UnitTests.Fixtures;
 
-internal static class BaseEventProducerConfiguration
+internal static class BaseEventProducerFixture
 {
     public static IBaseEventProducer GetBaseEventProducerConfiguration()
     {

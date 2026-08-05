@@ -2,24 +2,25 @@ using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Entities;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class DownvoteAnswerHandlerTests
 {
     private readonly DownvoteAnswerHandler _downvoteAnswerHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockRepositoriesGetters.GetMockVoteTypeRepository().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        RepositoryMocks.GetMockVoteTypeRepository().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_NoExistingVote_ReturnsSuccess()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(3, 3);
@@ -32,9 +33,8 @@ public class DownvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_UpvoteGiven()
+    public async Task Handle_ExistingUpvote_ReturnsSuccess()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(2, 3);
@@ -47,9 +47,8 @@ public class DownvoteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 0);
@@ -63,9 +62,8 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(0, 3);
@@ -79,9 +77,8 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_CannotVoteForOwnPost()
+    public async Task Handle_OwnAnswer_ReturnsCannotVoteForOwnPost()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 1);
@@ -95,17 +92,16 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteTypeNotFound()
+    public async Task Handle_NoVoteTypesConfigured_ReturnsVoteTypeNotFound()
     {
         //Arrange
         var downvoteAnswerHandler = new DownvoteAnswerHandler(
-            MockRepositoriesGetters.GetMockUnitOfWork().Object,
-            MockRepositoriesGetters.GetEmptyMockRepository<VoteType>().Object,
-            MockEntityProvidersGetters.GetMockUserProvider().Object,
-            BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-            MapperConfiguration.GetMapperConfiguration());
+            RepositoryMocks.GetMockUnitOfWork().Object,
+            RepositoryMocks.GetEmptyMockRepository<VoteType>().Object,
+            EntityProviderMocks.GetMockUserProvider().Object,
+            BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+            MapperFixture.GetMapperConfiguration());
         var command = new DownvoteAnswerCommand(1, 3);
 
         //Act
@@ -117,9 +113,8 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_TooLowReputation()
+    public async Task Handle_LowReputationUser_ReturnsTooLowReputation()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 4);
@@ -133,9 +128,8 @@ public class DownvoteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VoteAlreadyGiven()
+    public async Task Handle_ExistingDownvote_ReturnsVoteAlreadyGiven()
     {
         //Arrange
         var command = new DownvoteAnswerCommand(1, 3);

@@ -1,6 +1,6 @@
 using AnswerService.DAL;
 using AnswerService.Domain.Entities;
-using AnswerService.Tests.Configurations;
+using AnswerService.Tests.TestData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +10,7 @@ internal static class PrepDb
 {
     public static void PrepPopulation(this IServiceScope serviceScope)
     {
-        var answers = MockRepositoriesGetters.GetAnswers()
+        var answers = AnswerMother.GetAnswers()
             .Select(x => new Answer
             {
                 Id = 0,
@@ -20,8 +20,8 @@ internal static class PrepDb
                 IsAccepted = x.IsAccepted
             });
 
-        var votes = MockRepositoriesGetters.GetVotes().ToList();
-        var voteTypes = MockRepositoriesGetters.GetVoteTypes().ToList();
+        var votes = VoteMother.GetVotes().ToList();
+        var voteTypes = VoteTypeMother.GetVoteTypes().ToList();
 
         voteTypes.ForEach(x => x.Id = 0);
         votes.ForEach(x => x.VoteType = null!);

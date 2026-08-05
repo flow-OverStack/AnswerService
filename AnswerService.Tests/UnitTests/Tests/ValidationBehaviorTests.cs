@@ -5,13 +5,15 @@ using AnswerService.Application.Validators;
 using AnswerService.Domain.Dto.Answer;
 using AnswerService.Domain.Interfaces.Validation;
 using AnswerService.Domain.Results;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.UnitTests.Fixtures;
 using MediatR;
 using Moq;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class ValidationBehaviorTests
 {
     private const string ValidBody = "Test Body Test Body Test Body ";
@@ -28,9 +30,8 @@ public class ValidationBehaviorTests
         _mockNext = mock;
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_NoValidators()
+    public async Task Handle_NoValidatorsRegistered_ReturnsSuccess()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([]);
@@ -44,13 +45,12 @@ public class ValidationBehaviorTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success_With_ValidResults()
+    public async Task Handle_ValidCommandWithValidator_ReturnsSuccess()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
-            ValidatorConfiguration<IValidatableAnswer>.GetValidator(new AnswerValidator())
+            ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(ValidBody, 1, 1);
 
@@ -62,13 +62,12 @@ public class ValidationBehaviorTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Failure_With_InvalidResults()
+    public async Task Handle_EmptyAnswerBody_ReturnsInvalidAnswerBody()
     {
         //Arrange
         var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
-            ValidatorConfiguration<IValidatableAnswer>.GetValidator(new AnswerValidator())
+            ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(string.Empty, 1, 1);
 

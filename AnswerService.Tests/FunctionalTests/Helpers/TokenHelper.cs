@@ -5,7 +5,7 @@ using AnswerService.Domain.Dto.ExternalEntity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace AnswerService.Tests.FunctionalTests.Helper;
+namespace AnswerService.Tests.FunctionalTests.Helpers;
 
 internal static class TokenHelper
 {

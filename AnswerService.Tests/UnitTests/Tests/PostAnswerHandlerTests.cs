@@ -1,23 +1,24 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class PostAnswerHandlerTests
 {
     private readonly PostAnswerHandler _postAnswerHandler = new(
-        MockRepositoriesGetters.GetMockAnswerRepository().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MockEntityProvidersGetters.GetMockQuestionProvider().Object,
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockAnswerRepository().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        EntityProviderMocks.GetMockQuestionProvider().Object,
+        MapperFixture.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ValidCommand_ReturnsSuccess()
     {
         //Arrange
         var command = new PostAnswerCommand("Test Answer", 4, 1);
@@ -30,9 +31,8 @@ public class PostAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
         //Arrange
         var command = new PostAnswerCommand("Test Answer", 0, 1);
@@ -46,9 +46,8 @@ public class PostAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_QuestionNotFound()
+    public async Task Handle_QuestionDoesNotExist_ReturnsQuestionNotFound()
     {
         //Arrange
         var command = new PostAnswerCommand("Test Answer", 4, 0);
@@ -62,9 +61,8 @@ public class PostAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerAlreadyExists()
+    public async Task Handle_AnswerAlreadyExistsForUserAndQuestion_ReturnsAnswerAlreadyExists()
     {
         //Arrange
         var command = new PostAnswerCommand("Test Answer", 1, 1);
