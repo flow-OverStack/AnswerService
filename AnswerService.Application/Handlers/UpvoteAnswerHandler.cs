@@ -51,42 +51,34 @@ public class UpvoteAnswerHandler(
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.TooLowReputation,
                 (int)ErrorCodes.OperationForbidden);
 
+        if (vote != null && vote.VoteType.Id == voteType.Id)
+            return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.VoteAlreadyGiven, (int)ErrorCodes.VoteAlreadyGiven);
+
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
+
+        if (vote == null)
         {
-            if (vote == null)
+            vote = new Vote
             {
-                vote = new Vote
-                {
-                    AnswerId = answer.Id,
-                    UserId = initiator.Id,
-                    VoteType = voteType
-                };
+                AnswerId = answer.Id,
+                UserId = initiator.Id,
+                VoteType = voteType
+            };
 
-                await unitOfWork.Votes.CreateAsync(vote, cancellationToken);
-            }
-            else
-            {
-                if (vote.VoteType.Id == voteType.Id)
-                    return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.VoteAlreadyGiven,
-                        (int)ErrorCodes.VoteAlreadyGiven);
-
-                vote.VoteType = voteType;
-                unitOfWork.Votes.Update(vote);
-            }
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityUpvoted,
-                cancellationToken);
-
-            await transaction.CommitAsync(cancellationToken);
+            await unitOfWork.Votes.CreateAsync(vote, cancellationToken);
         }
-        catch (Exception)
+        else
         {
-            await transaction.RollbackAsync(CancellationToken.None);
-            throw;
+            vote.VoteType = voteType;
+            unitOfWork.Votes.Update(vote);
         }
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityUpvoted,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var dto = mapper.Map<VoteAnswerDto>(answer);
 

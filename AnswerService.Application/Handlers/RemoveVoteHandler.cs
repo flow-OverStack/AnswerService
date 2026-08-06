@@ -37,21 +37,14 @@ public class RemoveVoteHandler(
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.VoteNotFound, (int)ErrorCodes.VoteNotFound);
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            unitOfWork.Votes.Remove(vote);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityVoteRemoved,
-                cancellationToken);
+        unitOfWork.Votes.Remove(vote);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityVoteRemoved,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var voteAnswerDto = mapper.Map<VoteAnswerDto>(answer);
         return BaseResult<VoteAnswerDto>.Success(voteAnswerDto);

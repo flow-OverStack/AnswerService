@@ -45,23 +45,16 @@ public class RevokeAcceptanceHandler(
 
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            answer.IsAccepted = false;
-            unitOfWork.Answers.Update(answer);
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+        answer.IsAccepted = false;
+        unitOfWork.Answers.Update(answer);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAcceptanceRevoked,
-                cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAcceptanceRevoked,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var answerDto = mapper.Map<AnswerDto>(answer);
         return BaseResult<AnswerDto>.Success(answerDto);
