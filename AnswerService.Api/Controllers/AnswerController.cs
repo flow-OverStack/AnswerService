@@ -1,9 +1,9 @@
 using System.Net;
-using System.Security.Claims;
 using AnswerService.Api.Controllers.Base;
 using AnswerService.Api.Dtos.Answer;
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Extensions;
 using AnswerService.Domain.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +44,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<AnswerDto>>> PostAnswer(PostAnswerDto dto,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userId = User.GetUserId();
         var command = new PostAnswerCommand(dto.Body, userId, dto.QuestionId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -72,7 +72,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<AnswerDto>>> DeleteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new DeleteAnswerCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -106,7 +106,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<AnswerDto>>> EditAnswer(long answerId, EditAnswerDto dto,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new EditAnswerCommand(answerId, dto.Body, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -136,7 +136,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<AnswerDto>>> AcceptAnswer(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new AcceptAnswerCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -166,7 +166,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<AnswerDto>>> RevokeAnswerAcceptance(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new RevokeAcceptanceCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -196,7 +196,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> DownvoteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new DownvoteAnswerCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -217,7 +217,7 @@ public class AnswerController(IMediator mediator) : BaseController
     /// <response code="200">Vote was cast successfully</response>
     /// <response code="403">User is voting on their own post or has an insufficient reputation</response>
     /// <response code="404">User, answer or vote type not found</response>
-    /// <response code="409">User has already voted on this answer</response
+    /// <response code="409">User has already voted on this answer</response>
     [HttpPatch("{answerId:long}/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -226,7 +226,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> UpvoteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new UpvoteAnswerCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
@@ -252,7 +252,7 @@ public class AnswerController(IMediator mediator) : BaseController
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> RemoveVote(long answerId,
         CancellationToken cancellationToken)
     {
-        var userId = long.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var userId = User.GetUserId();
         var command = new RemoveVoteCommand(answerId, userId);
 
         var result = await mediator.Send(command, cancellationToken);
