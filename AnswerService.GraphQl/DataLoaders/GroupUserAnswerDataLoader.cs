@@ -1,5 +1,7 @@
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Domain.Entities;
+using AnswerService.Domain.Results;
+using AnswerService.GraphQl.DataLoaders.Base;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,24 +11,9 @@ public class GroupUserAnswerDataLoader(
     IBatchScheduler batchScheduler,
     DataLoaderOptions options,
     IServiceScopeFactory scopeFactory)
-    : GroupedDataLoader<long, Answer>(batchScheduler, options)
+    : GroupedEntityDataLoader<Answer, long>(batchScheduler, options, scopeFactory)
 {
-    protected override async Task<ILookup<long, Answer>> LoadGroupedBatchAsync(IReadOnlyList<long> keys,
-        CancellationToken cancellationToken)
-    {
-        await using var scope = scopeFactory.CreateAsyncScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var query = new GetUsersAnswersQuery(keys);
-
-        var result = await mediator.Send(query, cancellationToken);
-
-        if (!result.IsSuccess)
-            return Enumerable.Empty<IGrouping<long, Answer>>().ToLookup(_ => 0L, _ => default(Answer)!);
-
-        var lookup = result.Data
-            .SelectMany(x => x.Value.Select(y => new { x.Key, Answer = y }))
-            .ToLookup(x => x.Key, x => x.Answer);
-
-        return lookup;
-    }
+    protected override Task<CollectionResult<KeyValuePair<long, IEnumerable<Answer>>>> FetchAsync(
+        IServiceProvider scopedProvider, IReadOnlyList<long> keys, CancellationToken cancellationToken) =>
+        scopedProvider.GetRequiredService<IMediator>().Send(new GetUsersAnswersQuery(keys), cancellationToken);
 }
