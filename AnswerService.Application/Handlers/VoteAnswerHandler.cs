@@ -15,24 +15,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnswerService.Application.Handlers;
 
-public class DownvoteAnswerHandler(
+public class VoteAnswerHandler(
     IUnitOfWork unitOfWork,
     IBaseRepository<VoteType> voteTypeRepository,
     IEntityProvider<UserDto> userProvider,
     IBaseEventProducer producer,
-    IMapper mapper) : IRequestHandler<DownvoteAnswerCommand, BaseResult<VoteAnswerDto>>
+    IMapper mapper) :
+    IRequestHandler<UpvoteAnswerCommand, BaseResult<VoteAnswerDto>>,
+    IRequestHandler<DownvoteAnswerCommand, BaseResult<VoteAnswerDto>>
 {
-    public async Task<BaseResult<VoteAnswerDto>> Handle(DownvoteAnswerCommand request,
-        CancellationToken cancellationToken)
+    public Task<BaseResult<VoteAnswerDto>> Handle(UpvoteAnswerCommand request, CancellationToken cancellationToken) =>
+        VoteAsync(request.InitiatorId, request.Id, VoteTypes.Upvote, BaseEventType.EntityUpvoted, cancellationToken);
+
+    public Task<BaseResult<VoteAnswerDto>> Handle(DownvoteAnswerCommand request,
+        CancellationToken cancellationToken) =>
+        VoteAsync(request.InitiatorId, request.Id, VoteTypes.Downvote, BaseEventType.EntityDownvoted,
+            cancellationToken);
+
+    private async Task<BaseResult<VoteAnswerDto>> VoteAsync(long initiatorId, long answerId, VoteTypes voteTypeName,
+        BaseEventType eventType, CancellationToken cancellationToken)
     {
-        var initiator = await userProvider.GetByIdAsync(request.InitiatorId, cancellationToken);
+        var initiator = await userProvider.GetByIdAsync(initiatorId, cancellationToken);
         if (initiator == null)
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.UserNotFound, (int)ErrorCodes.UserNotFound);
 
         var answer = await unitOfWork.Answers.GetAll()
             .Include(x => x.Votes)
             .ThenInclude(x => x.VoteType)
-            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == answerId, cancellationToken);
         if (answer == null)
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.AnswerNotFound, (int)ErrorCodes.AnswerNotFound);
 
@@ -42,8 +52,9 @@ public class DownvoteAnswerHandler(
 
         var vote = answer.Votes.FirstOrDefault(x => x.UserId == initiator.Id);
 
+        var voteTypeNameString = voteTypeName.ToString();
         var voteType = await voteTypeRepository.GetAll()
-            .FirstOrDefaultAsync(x => x.Name == nameof(VoteTypes.Downvote), cancellationToken);
+            .FirstOrDefaultAsync(x => x.Name == voteTypeNameString, cancellationToken);
         if (voteType == null)
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.VoteTypeNotFound, (int)ErrorCodes.VoteTypeNotFound);
 
@@ -75,8 +86,7 @@ public class DownvoteAnswerHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityDownvoted,
-            cancellationToken);
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, eventType, cancellationToken);
 
         await transaction.CommitAsync(cancellationToken);
 

@@ -12,7 +12,7 @@ namespace AnswerService.Tests.UnitTests.Tests;
 [UnitTest]
 public class UpvoteAnswerHandlerTests
 {
-    private readonly UpvoteAnswerHandler _upvoteAnswerHandler = new(
+    private readonly VoteAnswerHandler _upvoteAnswerHandler = new(
         RepositoryMocks.GetMockUnitOfWork().Object,
         RepositoryMocks.GetMockVoteTypeRepository().Object,
         EntityProviderMocks.GetMockUserProvider().Object,
@@ -96,7 +96,7 @@ public class UpvoteAnswerHandlerTests
     public async Task Handle_VoteTypeMissingFromRepository_ReturnsVoteTypeNotFound()
     {
         //Arrange
-        var upvoteAnswerHandler = new UpvoteAnswerHandler(
+        var upvoteAnswerHandler = new VoteAnswerHandler(
             RepositoryMocks.GetMockUnitOfWork().Object,
             RepositoryMocks.GetEmptyMockRepository<VoteType>().Object,
             EntityProviderMocks.GetMockUserProvider().Object,
