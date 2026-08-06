@@ -1,4 +1,4 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Domain.Results;
 using FluentValidation;
 using MediatR;

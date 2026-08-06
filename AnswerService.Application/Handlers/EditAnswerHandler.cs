@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Entities;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Provider;

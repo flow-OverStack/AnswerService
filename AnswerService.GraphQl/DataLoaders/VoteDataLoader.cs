@@ -1,5 +1,5 @@
 using AnswerService.Application.Queries.Vote;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

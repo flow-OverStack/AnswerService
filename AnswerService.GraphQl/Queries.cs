@@ -1,7 +1,7 @@
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Queries.VoteType;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Domain.Entities;
 using AnswerService.GraphQl.DataLoaders;
 using AnswerService.GraphQl.Helpers;

@@ -1,5 +1,5 @@
 using System.Globalization;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Results;
 using Newtonsoft.Json;

@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AutoMapper;
 
 namespace AnswerService.GrpcClient.Mappings;

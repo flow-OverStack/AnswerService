@@ -1,4 +1,4 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;

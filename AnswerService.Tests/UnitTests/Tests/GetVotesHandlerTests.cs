@@ -4,7 +4,7 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Tests.Mocks;
 using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;

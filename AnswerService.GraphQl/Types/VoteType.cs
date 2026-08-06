@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Entities;
 using AnswerService.GraphQl.DataLoaders;
 using AnswerService.GraphQl.Types.Extension;

@@ -2,7 +2,7 @@ using AnswerService.Application.Behaviours;
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Resources;
 using AnswerService.Application.Validators;
-using AnswerService.Domain.Dto.Answer;
+using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Interfaces.Validation;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.UnitTests.Fixtures;

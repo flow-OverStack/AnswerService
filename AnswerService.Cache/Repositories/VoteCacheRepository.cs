@@ -2,7 +2,7 @@ using AnswerService.Cache.Helpers;
 using AnswerService.Cache.Interfaces;
 using AnswerService.Cache.Repositories.Base;
 using AnswerService.Cache.Settings;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Domain.Entities;
 using AnswerService.Domain.Interfaces.Provider;
 using AnswerService.Domain.Interfaces.Repository.Cache;

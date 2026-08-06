@@ -1,9 +1,9 @@
 using System.Net;
 using System.Security.Claims;
 using AnswerService.Api.Controllers.Base;
-using AnswerService.Api.Dto.Answer;
+using AnswerService.Api.Dtos.Answer;
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Domain.Dto.Answer;
+using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

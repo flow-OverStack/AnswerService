@@ -1,6 +1,6 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.GrpcClient;
 using AnswerService.GrpcClient.Mappings;
 using AnswerService.Tests.TestData;

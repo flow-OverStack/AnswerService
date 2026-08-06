@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Mime;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Domain.Results;
 using Microsoft.AspNetCore.Mvc;
 
