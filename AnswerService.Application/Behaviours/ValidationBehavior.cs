@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Helpers;
 using AnswerService.Domain.Results;
 using FluentValidation;
 using MediatR;
@@ -6,12 +7,11 @@ using MediatR;
 namespace AnswerService.Application.Behaviours;
 
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
-    : IPipelineBehavior<TRequest, BaseResult<TResponse>>
-    where TRequest : IRequest<BaseResult<TResponse>>
-    where TResponse : class
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>
+    where TResponse : BaseResult
 {
-    public async Task<BaseResult<TResponse>> Handle(TRequest request,
-        RequestHandlerDelegate<BaseResult<TResponse>> next,
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
         if (!validators.Any()) return await next(cancellationToken);
@@ -24,6 +24,6 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
         var errors = validations.Where(x => !x.IsValid).SelectMany(x => x.Errors);
         var errorMessage = string.Join(", ", errors);
 
-        return BaseResult<TResponse>.Failure(errorMessage, (int)ErrorCodes.InvalidProperty);
+        return ResultFactory.Failure<TResponse>(errorMessage, (int)ErrorCodes.InvalidProperty);
     }
 }

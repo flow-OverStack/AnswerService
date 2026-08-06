@@ -5,11 +5,11 @@ using AnswerService.Application.Validators;
 using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Interfaces.Validation;
 using AnswerService.Domain.Results;
+using AnswerService.Tests.Traits;
 using AnswerService.Tests.UnitTests.Fixtures;
 using MediatR;
 using Moq;
 using Xunit;
-using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
@@ -34,7 +34,7 @@ public class ValidationBehaviorTests
     public async Task Handle_NoValidatorsRegistered_ReturnsSuccess()
     {
         //Arrange
-        var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([]);
+        var behavior = new ValidationBehavior<PostAnswerCommand, BaseResult<AnswerDto>>([]);
         var command = new PostAnswerCommand(ValidBody, 1, 1);
 
         //Act
@@ -49,7 +49,7 @@ public class ValidationBehaviorTests
     public async Task Handle_ValidCommandWithValidator_ReturnsSuccess()
     {
         //Arrange
-        var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
+        var behavior = new ValidationBehavior<PostAnswerCommand, BaseResult<AnswerDto>>([
             ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(ValidBody, 1, 1);
@@ -66,7 +66,7 @@ public class ValidationBehaviorTests
     public async Task Handle_EmptyAnswerBody_ReturnsInvalidAnswerBody()
     {
         //Arrange
-        var behavior = new ValidationBehavior<PostAnswerCommand, AnswerDto>([
+        var behavior = new ValidationBehavior<PostAnswerCommand, BaseResult<AnswerDto>>([
             ValidatorFixture<IValidatableAnswer>.GetValidator(new AnswerValidator())
         ]);
         var command = new PostAnswerCommand(string.Empty, 1, 1);
