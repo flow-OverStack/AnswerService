@@ -18,7 +18,8 @@ public class GetAnswersHandlerTests
     private readonly CacheGetAnswersHandler _getAnswersHandler = new(
         new AnswerCacheRepository(
             new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration()),
+            LoggerFixture.GetLogger()),
         new GetAnswersHandler(
             RepositoryMocks.GetMockAnswerRepository().Object)
     );

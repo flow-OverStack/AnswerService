@@ -19,7 +19,8 @@ public class GetVotesHandlerTests
     private readonly CacheGetVotesHandler _handler = new(
         new VoteCacheRepository(
             new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration()),
+            LoggerFixture.GetLogger()),
         new GetVotesHandler(
             RepositoryMocks.GetMockVoteRepository().Object)
     );
