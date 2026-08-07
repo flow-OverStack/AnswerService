@@ -4,12 +4,14 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Tests.Mocks;
+using AnswerService.Tests.Traits;
 using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
+using Moq;
+using Serilog;
 using Xunit;
-using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
@@ -19,7 +21,8 @@ public class GetVotesHandlerTests
     private readonly CacheGetVotesHandler _handler = new(
         new VoteCacheRepository(
             new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration()),
+            new Mock<ILogger>().Object),
         new GetVotesHandler(
             RepositoryMocks.GetMockVoteRepository().Object)
     );

@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
 using AnswerService.Domain.Interfaces.Provider;
@@ -44,31 +44,21 @@ public class AcceptAnswerHandler(
                 (int)ErrorCodes.AnswerAlreadyAccepted);
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            var updated = await unitOfWork.Answers.GetAll()
-                .Where(x => x.Id == answer.Id && !x.IsAccepted)
-                .Where(x => !unitOfWork.Answers.GetAll()
-                    .Any(a => a.QuestionId == answer.QuestionId && a.IsAccepted))
-                .ExecuteUpdateAsync(s => s.SetProperty(a => a.IsAccepted, true), cancellationToken);
 
-            if (updated == 0)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return BaseResult<AnswerDto>.Failure(ErrorMessage.QuestionAlreadyHasAcceptedAnswer,
-                    (int)ErrorCodes.QuestionAlreadyHasAcceptedAnswer);
-            }
+        var updated = await unitOfWork.Answers.GetAll()
+            .Where(x => x.Id == answer.Id && !x.IsAccepted)
+            .Where(x => !unitOfWork.Answers.GetAll()
+                .Any(a => a.QuestionId == answer.QuestionId && a.IsAccepted))
+            .ExecuteUpdateAsync(s => s.SetProperty(a => a.IsAccepted, true), cancellationToken);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAccepted,
-                cancellationToken);
+        if (updated == 0)
+            return BaseResult<AnswerDto>.Failure(ErrorMessage.QuestionAlreadyHasAcceptedAnswer,
+                (int)ErrorCodes.QuestionAlreadyHasAcceptedAnswer);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAccepted,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var answerDto = mapper.Map<AnswerDto>(answer);
         return BaseResult<AnswerDto>.Success(answerDto);

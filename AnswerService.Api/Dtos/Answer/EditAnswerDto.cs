@@ -1,3 +1,3 @@
-namespace AnswerService.Api.Dto.Answer;
+namespace AnswerService.Api.Dtos.Answer;
 
 public record EditAnswerDto(string Body);

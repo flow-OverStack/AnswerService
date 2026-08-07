@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Domain.Results;
 using MediatR;
 

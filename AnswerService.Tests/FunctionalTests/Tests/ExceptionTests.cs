@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Headers;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.FunctionalTests.Base.Exception;
 using AnswerService.Tests.FunctionalTests.Helpers;

@@ -5,10 +5,12 @@ using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
 using AnswerService.Tests.Mocks;
+using AnswerService.Tests.Traits;
 using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
+using Moq;
+using Serilog;
 using Xunit;
-using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
@@ -18,7 +20,8 @@ public class GetAnswersHandlerTests
     private readonly CacheGetAnswersHandler _getAnswersHandler = new(
         new AnswerCacheRepository(
             new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration())),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration()),
+            new Mock<ILogger>().Object),
         new GetAnswersHandler(
             RepositoryMocks.GetMockAnswerRepository().Object)
     );

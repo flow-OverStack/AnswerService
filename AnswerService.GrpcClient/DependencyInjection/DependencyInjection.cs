@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Interfaces.Provider;
 using AnswerService.GrpcClient.Handlers;
 using AnswerService.GrpcClient.Mappings;

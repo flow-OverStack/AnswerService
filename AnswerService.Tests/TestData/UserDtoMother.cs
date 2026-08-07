@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 
 namespace AnswerService.Tests.TestData;
 

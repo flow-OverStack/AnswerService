@@ -1,5 +1,7 @@
 using AnswerService.Application.Queries.VoteType;
 using AnswerService.Domain.Entities;
+using AnswerService.Domain.Results;
+using AnswerService.GraphQl.DataLoaders.Base;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,24 +11,11 @@ public class VoteTypeDataLoader(
     IBatchScheduler batchScheduler,
     DataLoaderOptions options,
     IServiceScopeFactory scopeFactory)
-    : BatchDataLoader<long, VoteType>(batchScheduler, options)
+    : EntityBatchDataLoader<VoteType, long>(batchScheduler, options, scopeFactory)
 {
-    protected override async Task<IReadOnlyDictionary<long, VoteType>> LoadBatchAsync(IReadOnlyList<long> keys,
-        CancellationToken cancellationToken)
-    {
-        await using var scope = scopeFactory.CreateAsyncScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var query = new GetVoteTypesQuery(keys);
+    protected override Task<CollectionResult<VoteType>> FetchAsync(IServiceProvider scopedProvider,
+        IReadOnlyList<long> keys, CancellationToken cancellationToken) =>
+        scopedProvider.GetRequiredService<IMediator>().Send(new GetVoteTypesQuery(keys), cancellationToken);
 
-        var result = await mediator.Send(query, cancellationToken);
-
-        var dictionary = new Dictionary<long, VoteType>();
-
-        if (!result.IsSuccess)
-            return dictionary.AsReadOnly();
-
-        dictionary = result.Data.ToDictionary(x => x.Id, x => x);
-
-        return dictionary.AsReadOnly();
-    }
+    protected override long GetId(VoteType entity) => entity.Id;
 }

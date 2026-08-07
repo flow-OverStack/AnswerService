@@ -57,7 +57,7 @@ Composition root is `AnswerService.Api/Program.cs` + `Startup.cs`. Each infrastr
 
 - **Writes** go through REST: `AnswerController` → `IMediator.Send(command)` → command handler in `Application/Handlers/`. Handlers return `BaseResult<T>`; the controller's `HandleBaseResult` maps success/`ErrorCode` to HTTP status.
 - **Reads** go through GraphQL (`Queries.cs`) → `IMediator.Send(query)` → query handler returning `IQueryable<T>` (`QueryableResult`) or `CollectionResult<T>`. Hot Chocolate applies paging/filtering/sorting over the `IQueryable`.
-- A MediatR `ValidationBehavior` pipeline runs FluentValidation validators before handlers. Registration is done by **reflection** in `Application/DependencyInjection/DependencyInjection.cs` — it scans the assembly and only wires the behavior for handlers whose response is `BaseResult<T>`. Validators are also auto-registered, including resolving `IValidator<TInterface>` to concrete types.
+- A MediatR `ValidationBehavior<TRequest, TResponse>` pipeline runs FluentValidation validators before handlers. It's declared as `IPipelineBehavior<TRequest, TResponse> where TResponse : BaseResult`, so `services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))` registers it natively for every handler whose response derives from `BaseResult` (i.e. `BaseResult<T>`, `CollectionResult<T>`, `QueryableResult<T>`). Failures are constructed via `Application/Helpers/ResultFactory.cs`, which reflects only to pick the right `TResponse.Failure(...)` overload (using `BindingFlags.DeclaredOnly` since each `BaseResult` subtype shadows `Failure` with `new static`). Validators are registered by reflection in `AddScopedValidatorsForAssignableValidatedTypes` (`Application/DependencyInjection/DependencyInjection.cs`) — a single validator against a shared interface (e.g. `AnswerValidator : AbstractValidator<IValidatableAnswer>`) is auto-registered as `IValidator<TCommand>` for every concrete command assignable to that interface, exploiting FluentValidation's `IValidator<in T>` contravariance.
 
 ### Caching via decorators
 
@@ -65,7 +65,7 @@ Query handlers under `Application/Handlers/Get/` have **cache decorator counterp
 
 ### Outbox → Kafka event flow
 
-Write handlers that produce events (e.g. `AcceptAnswerHandler`, `UpvoteAnswerHandler`, `DownvoteAnswerHandler`, `RemoveVoteHandler`, `RevokeAcceptanceHandler`) call `IBaseEventProducer.ProduceAsync(...)`. Flow:
+Write handlers that produce events (e.g. `AcceptAnswerHandler`, `VoteAnswerHandler` (handles both `UpvoteAnswerCommand` and `DownvoteAnswerCommand`), `RemoveVoteHandler`, `RevokeAcceptanceHandler`) call `IBaseEventProducer.ProduceAsync(...)`. Flow:
 
 1. `BaseEventProducer` (Messaging) builds a `BaseEvent` and calls `IOutboxService.AddToOutboxAsync` → an `OutboxMessage` row is written to Postgres **in the same DbContext/transaction** as the business change.
 2. `OutboxBackgroundService` (Hangfire-hosted) periodically calls `OutboxProcessor.ProcessOutboxMessagesAsync`, which reads unprocessed messages, resolves a `ITopicProducer` per event type via `ITopicProducerResolver`, and publishes to Kafka through **MassTransit**.
@@ -87,10 +87,9 @@ Write handlers that produce events (e.g. `AcceptAnswerHandler`, `UpvoteAnswerHan
 
 - Handlers return `BaseResult<T>` / `CollectionResult<T>` / `QueryableResult<T>` — do not throw for expected business failures; return a failure with an `ErrorCodes` value and a resource key.
 - Answer body length rules live in `Domain/Settings/BusinessRules.cs` (min 30, max 30000).
-- DI wiring relies on reflection + namespace conventions (validators, MediatR behaviors, cache decorators). New components must land in the expected namespaces/shapes or they will not be registered.
-- Tag every test with `[Trait("Category", "Unit")]` or `"Functional"` so the CI filters pick it up.
+- `ValidationBehavior<,>` pipeline registration is native (`AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>))`); validator and cache-decorator registration rely on reflection + namespace/interface conventions. New commands validated by a shared interface (e.g. `IValidatableAnswer`) need no new validator class; new cache decorators must land in the `.Decorators.Cache.` namespace with a matching non-decorator handler counterpart to be picked up automatically.
+- Tests use class-level `[UnitTest]` / `[FunctionalTest]` attributes (custom `ITraitAttribute`s in `AnswerService.Tests/Traits/`, not raw `[Trait("Category", ...)]`) so the CI filters (`Category=Unit`/`Category=Functional`) pick them up.
 
 ## Notes
 
 - `.github/workflows/`: `tests.yml` runs unit + functional tests with Coverlet (OpenCover), then triggers `sonarqube.yml` and `docker.yml`. Code quality/coverage is gated by SonarCloud.
-- `AnswerSevice.GraphQl/` (note the misspelling) is a stale/duplicate project being removed — the live GraphQL project is `AnswerService.GraphQl/`. Don't add code to the misspelled one.
