@@ -1,6 +1,8 @@
-using AnswerService.Tests.UnitTests.Fixtures;
-using Xunit;
 using AnswerService.Tests.Traits;
+using AnswerService.Tests.UnitTests.Fixtures;
+using Moq;
+using Serilog;
+using Xunit;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
@@ -13,7 +15,7 @@ public class OutboxBackgroundServiceTests
         //Arrange
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
         var outboxService =
-            new TestableOutboxBackgroundService(LoggerFixture.GetLogger(), null!); // passing null throws
+            new TestableOutboxBackgroundService(new Mock<ILogger>().Object, null!); // passing null throws
 
         //Act
         await outboxService.ExecuteAsync(cts.Token);
