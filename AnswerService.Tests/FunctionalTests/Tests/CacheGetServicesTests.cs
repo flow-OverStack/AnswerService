@@ -2,15 +2,16 @@ using System.Net;
 using System.Net.Http.Json;
 using AnswerService.Application.Handlers.Get.Vote;
 using AnswerService.Application.Queries.Vote;
+using AnswerService.Domain.Entities;
 using AnswerService.Domain.Interfaces.Repository.Cache;
 using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
 using AnswerService.Tests.FunctionalTests.Helpers;
+using AnswerService.Tests.Traits;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using Xunit;
-using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
@@ -38,7 +39,7 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         //Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotNull(result!.Data.Answer);
-        Assert.NotNull(result!.Data.Answer.Votes);
+        Assert.NotNull(result.Data.Answer.Votes);
     }
 
     [Fact]
@@ -93,8 +94,8 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         var repository = scope.ServiceProvider.GetRequiredService<IVoteCacheRepository>();
         // Inner service is not in the DI
         var inner = ActivatorUtilities.CreateInstance<GetAnswersVotesHandler>(scope.ServiceProvider);
-        var fetch = async (IEnumerable<long> idsToFetch, CancellationToken ct) =>
-            (await inner.Handle(new GetAnswersVotesQuery(idsToFetch), ct)).Data ?? [];
+        Func<IEnumerable<long>, CancellationToken, Task<IEnumerable<KeyValuePair<long, IEnumerable<Vote>>>>> fetch =
+            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersVotesQuery(idsToFetch), ct)).Data ?? [];
 
         //Act
         // The first call marks the user as null in the cache
