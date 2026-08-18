@@ -16,9 +16,9 @@ public class CacheGetVotesHandler(
     public async Task<CollectionResult<Domain.Entities.Vote>> Handle(GetVotesQuery request,
         CancellationToken cancellationToken)
     {
-        var keys = request.Dtos.ToArray();
-        var votes = (await cacheRepository.GetByDtosAsync(keys,
-            async (dtosToFetch, ct) => (await inner.Handle(new GetVotesQuery(dtosToFetch.ToArray()), ct)).Data ?? [],
+        var keys = request.Keys.ToArray();
+        var votes = (await cacheRepository.GetByUserAndAnswerAsync(keys,
+            async (keysToFetch, ct) => (await inner.Handle(new GetVotesQuery(keysToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (votes.Length == 0) return CollectionResult<Domain.Entities.Vote>.VotesNotFound(keys.Length);

@@ -4,4 +4,4 @@ using MediatR;
 
 namespace AnswerService.Application.Queries.Vote;
 
-public record GetVotesQuery(IReadOnlyCollection<VoteDto> Dtos) : IRequest<CollectionResult<Domain.Entities.Vote>>;
+public record GetVotesQuery(IReadOnlyCollection<VoteKey> Keys) : IRequest<CollectionResult<Domain.Entities.Vote>>;

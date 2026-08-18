@@ -12,11 +12,11 @@ public class VoteDataLoader(
     IBatchScheduler batchScheduler,
     DataLoaderOptions options,
     IServiceScopeFactory scopeFactory)
-    : EntityBatchDataLoader<Vote, VoteDto>(batchScheduler, options, scopeFactory)
+    : EntityBatchDataLoader<Vote, VoteKey>(batchScheduler, options, scopeFactory)
 {
     protected override Task<CollectionResult<Vote>> FetchAsync(IServiceProvider scopedProvider,
-        IReadOnlyList<VoteDto> keys, CancellationToken cancellationToken) =>
+        IReadOnlyList<VoteKey> keys, CancellationToken cancellationToken) =>
         scopedProvider.GetRequiredService<IMediator>().Send(new GetVotesQuery(keys), cancellationToken);
 
-    protected override VoteDto GetId(Vote entity) => new(entity.AnswerId, entity.UserId);
+    protected override VoteKey GetId(Vote entity) => new(entity.AnswerId, entity.UserId);
 }

@@ -16,7 +16,7 @@ public class GetVotesHandler(IBaseRepository<Domain.Entities.Vote> voteRepositor
     public async Task<CollectionResult<Domain.Entities.Vote>> Handle(GetVotesQuery request,
         CancellationToken cancellationToken)
     {
-        var keys = request.Dtos.ToArray();
+        var keys = request.Keys.ToArray();
 
         var predicate = PredicateBuilder.New<Domain.Entities.Vote>();
         predicate = keys.Aggregate(predicate,
