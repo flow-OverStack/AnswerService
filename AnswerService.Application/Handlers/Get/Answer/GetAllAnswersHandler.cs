@@ -12,8 +12,6 @@ public class GetAllAnswersHandler(IBaseRepository<Domain.Entities.Answer> answer
     public Task<QueryableResult<Domain.Entities.Answer>> Handle(GetAllAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         var answers = answerRepository.GetAll().AsNoTracking();
 
         return Task.FromResult(QueryableResult<Domain.Entities.Answer>.Success(answers));

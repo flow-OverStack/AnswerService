@@ -12,8 +12,6 @@ public class GetAllVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> vo
     public Task<QueryableResult<Domain.Entities.VoteType>> Handle(GetAllVoteTypesQuery request,
         CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         var voteTypes = voteTypeRepository.GetAll().AsNoTracking();
 
         return Task.FromResult(QueryableResult<Domain.Entities.VoteType>.Success(voteTypes));
