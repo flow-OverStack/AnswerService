@@ -15,8 +15,9 @@ namespace AnswerService.Api.Controllers;
 ///     Answer controller
 /// </summary>
 /// <response code="401">User is not authenticated</response>
-[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 [Authorize]
+[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType(StatusCodes.Status404NotFound)]
 public class AnswerController(IMediator mediator) : BaseController
 {
     /// <summary>
@@ -29,7 +30,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> PostAnswer(PostAnswerDto dto,
         CancellationToken cancellationToken)
     {
@@ -50,7 +50,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpDelete("{answerId:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> DeleteAnswer(long answerId,
         CancellationToken cancellationToken)
     {
@@ -73,7 +72,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> EditAnswer(long answerId, EditAnswerDto dto,
         CancellationToken cancellationToken)
     {
@@ -95,7 +93,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpPatch("{answerId:long}/accept")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> AcceptAnswer(long answerId,
         CancellationToken cancellationToken)
@@ -118,7 +115,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpPatch("{answerId:long}/revoke-acceptance")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<BaseResult<AnswerDto>>> RevokeAnswerAcceptance(long answerId,
         CancellationToken cancellationToken)
@@ -141,7 +137,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpPatch("{answerId:long}/downvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> DownvoteAnswer(long answerId,
         CancellationToken cancellationToken)
@@ -164,7 +159,6 @@ public class AnswerController(IMediator mediator) : BaseController
     [HttpPatch("{answerId:long}/upvote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> UpvoteAnswer(long answerId,
         CancellationToken cancellationToken)
@@ -184,7 +178,6 @@ public class AnswerController(IMediator mediator) : BaseController
     /// <response code="404">User, answer or vote not found</response>
     [HttpDelete("{answerId:long}/vote")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BaseResult<VoteAnswerDto>>> RemoveVote(long answerId,
         CancellationToken cancellationToken)
     {
