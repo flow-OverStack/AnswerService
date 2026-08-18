@@ -1,6 +1,7 @@
 using System.Net;
 using AnswerService.Api.Controllers.Base;
 using AnswerService.Api.Dtos.Answer;
+using AnswerService.Api.Extensions;
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Extensions;
@@ -38,7 +39,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result, HttpStatusCode.Created);
+        return result.ToActionResult(HttpStatusCode.Created);
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -80,7 +81,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -124,7 +125,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -146,7 +147,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -168,7 +169,7 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 
     /// <summary>
@@ -186,6 +187,6 @@ public class AnswerController(IMediator mediator) : BaseController
 
         var result = await mediator.Send(command, cancellationToken);
 
-        return HandleBaseResult(result);
+        return result.ToActionResult();
     }
 }
