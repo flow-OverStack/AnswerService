@@ -16,13 +16,12 @@ public class CacheGetAnswersHandler(
     public async Task<CollectionResult<Domain.Entities.Answer>> Handle(GetAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        var idsArray = request.Ids.ToArray();
-        var questions = (await cacheRepository.GetByIdsAsync(idsArray,
+        var questions = (await cacheRepository.GetByIdsAsync(request.Ids,
             async (idsToFetch, ct) => (await inner.Handle(new GetAnswersQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (questions.Length == 0)
-            return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(idsArray.Length);
+            return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(request.Ids.Count);
 
         return CollectionResult<Domain.Entities.Answer>.Success(questions);
     }

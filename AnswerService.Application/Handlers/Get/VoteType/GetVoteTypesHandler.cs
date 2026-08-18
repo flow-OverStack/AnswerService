@@ -15,13 +15,12 @@ public class GetVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> voteT
     public async Task<CollectionResult<Domain.Entities.VoteType>> Handle(GetVoteTypesQuery request,
         CancellationToken cancellationToken)
     {
-        var voteTypeIds = request.VoteTypeIds.ToArray();
         var voteTypes = await voteTypeRepository.GetAll()
-            .Where(x => voteTypeIds.Contains(x.Id))
+            .Where(x => request.VoteTypeIds.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 
         if (voteTypes.Length == 0)
-            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(voteTypeIds.Length);
+            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(request.VoteTypeIds.Count);
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

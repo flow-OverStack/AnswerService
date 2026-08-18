@@ -15,12 +15,11 @@ public class GetAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRep
     public async Task<CollectionResult<Domain.Entities.Answer>> Handle(GetAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        var ids = request.Ids.ToArray();
         var answers = await answerRepository.GetAll()
-            .Where(x => ids.Contains(x.Id))
+            .Where(x => request.Ids.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 
-        if (answers.Length == 0) return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(ids.Length);
+        if (answers.Length == 0) return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(request.Ids.Count);
 
         return CollectionResult<Domain.Entities.Answer>.Success(answers);
     }

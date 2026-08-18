@@ -16,12 +16,11 @@ public class CacheGetVotesHandler(
     public async Task<CollectionResult<Domain.Entities.Vote>> Handle(GetVotesQuery request,
         CancellationToken cancellationToken)
     {
-        var keys = request.Keys.ToArray();
-        var votes = (await cacheRepository.GetByUserAndAnswerAsync(keys,
+        var votes = (await cacheRepository.GetByUserAndAnswerAsync(request.Keys,
             async (keysToFetch, ct) => (await inner.Handle(new GetVotesQuery(keysToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
-        if (votes.Length == 0) return CollectionResult<Domain.Entities.Vote>.VotesNotFound(keys.Length);
+        if (votes.Length == 0) return CollectionResult<Domain.Entities.Vote>.VotesNotFound(request.Keys.Count);
 
         return CollectionResult<Domain.Entities.Vote>.Success(votes);
     }
