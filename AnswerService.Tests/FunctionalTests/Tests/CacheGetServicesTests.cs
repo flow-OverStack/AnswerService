@@ -95,7 +95,7 @@ public class CacheGetServicesTests(FunctionalTestWebAppFactory factory) : BaseFu
         // Inner service is not in the DI
         var inner = ActivatorUtilities.CreateInstance<GetAnswersVotesHandler>(scope.ServiceProvider);
         Func<IEnumerable<long>, CancellationToken, Task<IEnumerable<KeyValuePair<long, IEnumerable<Vote>>>>> fetch =
-            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersVotesQuery(idsToFetch), ct)).Data ?? [];
+            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersVotesQuery(idsToFetch.ToArray()), ct)).Data ?? [];
 
         //Act
         // The first call marks the user as null in the cache

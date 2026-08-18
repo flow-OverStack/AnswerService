@@ -18,7 +18,7 @@ public class CacheGetAnswersHandler(
     {
         var idsArray = request.Ids.ToArray();
         var questions = (await cacheRepository.GetByIdsAsync(idsArray,
-            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersQuery(idsToFetch), ct)).Data ?? [],
+            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (questions.Length == 0)

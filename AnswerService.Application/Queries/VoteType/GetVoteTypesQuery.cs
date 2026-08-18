@@ -3,4 +3,4 @@ using MediatR;
 
 namespace AnswerService.Application.Queries.VoteType;
 
-public record GetVoteTypesQuery(IEnumerable<long> VoteTypeIds) : IRequest<CollectionResult<Domain.Entities.VoteType>>;
+public record GetVoteTypesQuery(IReadOnlyCollection<long> VoteTypeIds) : IRequest<CollectionResult<Domain.Entities.VoteType>>;
