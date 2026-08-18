@@ -2,6 +2,7 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnswerService.Application.Handlers.Get.Vote;
 
@@ -13,7 +14,7 @@ public class GetAllVotesHandler(IBaseRepository<Domain.Entities.Vote> voteReposi
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var votes = voteRepository.GetAll();
+        var votes = voteRepository.GetAll().AsNoTracking();
 
         return Task.FromResult(QueryableResult<Domain.Entities.Vote>.Success(votes));
     }

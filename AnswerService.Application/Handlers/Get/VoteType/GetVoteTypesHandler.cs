@@ -16,6 +16,7 @@ public class GetVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> voteT
         CancellationToken cancellationToken)
     {
         var voteTypes = await voteTypeRepository.GetAll()
+            .AsNoTracking()
             .Where(x => request.VoteTypeIds.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 

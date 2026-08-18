@@ -22,6 +22,7 @@ public class GetVotesHandler(IBaseRepository<Domain.Entities.Vote> voteRepositor
                 current.Or(x => x.AnswerId == local.AnswerId && x.UserId == local.UserId));
 
         var votes = await voteRepository.GetAll()
+            .AsNoTracking()
             .AsExpandable()
             .Where(predicate)
             .ToArrayAsync(cancellationToken);

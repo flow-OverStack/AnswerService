@@ -16,6 +16,7 @@ public class GetAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRep
         CancellationToken cancellationToken)
     {
         var answers = await answerRepository.GetAll()
+            .AsNoTracking()
             .Where(x => request.Ids.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 
