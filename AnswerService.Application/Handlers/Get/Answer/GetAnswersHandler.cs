@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
@@ -19,14 +20,7 @@ public class GetAnswersHandler(IBaseRepository<Domain.Entities.Answer> answerRep
             .Where(x => ids.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 
-        if (answers.Length == 0)
-            return ids.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswerNotFound,
-                    (int)ErrorCodes.AnswerNotFound),
-                > 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswersNotFound,
-                    (int)ErrorCodes.AnswersNotFound)
-            };
+        if (answers.Length == 0) return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(ids.Length);
 
         return CollectionResult<Domain.Entities.Answer>.Success(answers);
     }

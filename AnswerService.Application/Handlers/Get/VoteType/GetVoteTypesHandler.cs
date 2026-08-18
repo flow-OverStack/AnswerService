@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
@@ -20,13 +21,7 @@ public class GetVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> voteT
             .ToArrayAsync(cancellationToken);
 
         if (voteTypes.Length == 0)
-            return voteTypeIds.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypeNotFound,
-                    (int)ErrorCodes.VoteTypeNotFound),
-                > 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypesNotFound,
-                    (int)ErrorCodes.VoteTypesNotFound)
-            };
+            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(voteTypeIds.Length);
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

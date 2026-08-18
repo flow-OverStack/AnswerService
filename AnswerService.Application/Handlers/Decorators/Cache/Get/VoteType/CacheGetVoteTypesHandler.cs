@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository.Cache;
@@ -21,13 +22,7 @@ public class CacheGetVoteTypesHandler(
             cancellationToken)).ToArray();
 
         if (voteTypes.Length == 0)
-            return idsArray.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypeNotFound,
-                    (int)ErrorCodes.VoteTypeNotFound),
-                > 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypesNotFound,
-                    (int)ErrorCodes.VoteTypesNotFound)
-            };
+            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(idsArray.Length);
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

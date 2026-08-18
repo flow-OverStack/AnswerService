@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository.Cache;
@@ -21,13 +22,7 @@ public class CacheGetAnswersHandler(
             cancellationToken)).ToArray();
 
         if (questions.Length == 0)
-            return idsArray.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswerNotFound,
-                    (int)ErrorCodes.AnswerNotFound),
-                > 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswersNotFound,
-                    (int)ErrorCodes.AnswersNotFound)
-            };
+            return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(idsArray.Length);
 
         return CollectionResult<Domain.Entities.Answer>.Success(questions);
     }
