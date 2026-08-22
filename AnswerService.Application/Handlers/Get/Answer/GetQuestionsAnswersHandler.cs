@@ -19,6 +19,7 @@ public class GetQuestionsAnswersHandler(IBaseRepository<Domain.Entities.Answer> 
         var ids = request.QuestionIds.ToArray();
 
         var answers = (await answerRepository.GetAll()
+                .AsNoTracking()
                 .Where(x => ids.Contains(x.QuestionId))
                 .GroupBy(x => x.QuestionId)
                 .ToArrayAsync(cancellationToken))

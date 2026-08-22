@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository.Cache;
@@ -15,19 +16,12 @@ public class CacheGetAnswersHandler(
     public async Task<CollectionResult<Domain.Entities.Answer>> Handle(GetAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        var idsArray = request.Ids.ToArray();
-        var questions = (await cacheRepository.GetByIdsAsync(idsArray,
-            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersQuery(idsToFetch), ct)).Data ?? [],
+        var questions = (await cacheRepository.GetByIdsAsync(request.Ids,
+            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (questions.Length == 0)
-            return idsArray.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswerNotFound,
-                    (int)ErrorCodes.AnswerNotFound),
-                > 1 => CollectionResult<Domain.Entities.Answer>.Failure(ErrorMessage.AnswersNotFound,
-                    (int)ErrorCodes.AnswersNotFound)
-            };
+            return CollectionResult<Domain.Entities.Answer>.AnswersNotFound(request.Ids.Count);
 
         return CollectionResult<Domain.Entities.Answer>.Success(questions);
     }

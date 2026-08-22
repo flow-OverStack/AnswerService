@@ -19,7 +19,7 @@ public class CacheGetAnswersVotesHandler(
     {
         var idsArray = request.AnswerIds.ToArray();
         var votes = (await cacheRepository.GetAnswersVotesAsync(idsArray,
-            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersVotesQuery(idsToFetch), ct)).Data ?? [],
+            async (idsToFetch, ct) => (await inner.Handle(new GetAnswersVotesQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (votes.Length == 0)

@@ -19,12 +19,12 @@ namespace AnswerService.DAL.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Body = table.Column<string>(type: "character varying(30000)", maxLength: 30000, nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
                     QuestionId = table.Column<long>(type: "bigint", nullable: false),
-                    IsAccepted = table.Column<bool>(type: "boolean", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsAccepted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     Enabled = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    UserId = table.Column<long>(type: "bigint", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

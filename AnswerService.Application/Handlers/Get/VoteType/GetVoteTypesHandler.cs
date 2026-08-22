@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
@@ -14,19 +15,13 @@ public class GetVoteTypesHandler(IBaseRepository<Domain.Entities.VoteType> voteT
     public async Task<CollectionResult<Domain.Entities.VoteType>> Handle(GetVoteTypesQuery request,
         CancellationToken cancellationToken)
     {
-        var voteTypeIds = request.VoteTypeIds.ToArray();
         var voteTypes = await voteTypeRepository.GetAll()
-            .Where(x => voteTypeIds.Contains(x.Id))
+            .AsNoTracking()
+            .Where(x => request.VoteTypeIds.Contains(x.Id))
             .ToArrayAsync(cancellationToken);
 
         if (voteTypes.Length == 0)
-            return voteTypeIds.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypeNotFound,
-                    (int)ErrorCodes.VoteTypeNotFound),
-                > 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypesNotFound,
-                    (int)ErrorCodes.VoteTypesNotFound)
-            };
+            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(request.VoteTypeIds.Count);
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

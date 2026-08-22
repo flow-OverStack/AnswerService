@@ -1,4 +1,5 @@
 using AnswerService.Application.Enums;
+using AnswerService.Application.Extensions;
 using AnswerService.Application.Queries.VoteType;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository.Cache;
@@ -15,19 +16,12 @@ public class CacheGetVoteTypesHandler(
     public async Task<CollectionResult<Domain.Entities.VoteType>> Handle(GetVoteTypesQuery request,
         CancellationToken cancellationToken)
     {
-        var idsArray = request.VoteTypeIds.ToArray();
-        var voteTypes = (await cacheRepository.GetByIdsAsync(idsArray,
-            async (idsToFetch, ct) => (await inner.Handle(new GetVoteTypesQuery(idsToFetch), ct)).Data ?? [],
+        var voteTypes = (await cacheRepository.GetByIdsAsync(request.VoteTypeIds,
+            async (idsToFetch, ct) => (await inner.Handle(new GetVoteTypesQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (voteTypes.Length == 0)
-            return idsArray.Length switch
-            {
-                <= 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypeNotFound,
-                    (int)ErrorCodes.VoteTypeNotFound),
-                > 1 => CollectionResult<Domain.Entities.VoteType>.Failure(ErrorMessage.VoteTypesNotFound,
-                    (int)ErrorCodes.VoteTypesNotFound)
-            };
+            return CollectionResult<Domain.Entities.VoteType>.VoteTypesNotFound(request.VoteTypeIds.Count);
 
         return CollectionResult<Domain.Entities.VoteType>.Success(voteTypes);
     }

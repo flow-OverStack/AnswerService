@@ -1,3 +1,4 @@
+using AnswerService.Application.Resources;
 using AnswerService.Application.Settings;
 using AnswerService.Domain.Dtos.Pagination;
 using FluentValidation;
@@ -12,12 +13,14 @@ public class OffsetPaginationParamsValidator : AbstractValidator<OffsetPaginatio
         var maxPageSize = pagination.Value.MaxPageSize;
 
         RuleFor(x => x.Skip)
-            .NotNull().WithMessage($"'{nameof(OffsetPaginationParams.Skip)}' must be provided.")
-            .GreaterThanOrEqualTo(0).WithMessage($"'{nameof(OffsetPaginationParams.Skip)}' must be greater than or equal to 0.");
+            .NotNull().WithMessage(_ => string.Format(ErrorMessage.Required, nameof(OffsetPaginationParams.Skip)))
+            .GreaterThanOrEqualTo(0)
+            .WithMessage(_ => string.Format(ErrorMessage.InvalidMinValue, nameof(OffsetPaginationParams.Skip), 0));
 
         RuleFor(x => x.Take)
-            .NotNull().WithMessage($"'{nameof(OffsetPaginationParams.Take)}' must be provided.")
+            .NotNull().WithMessage(_ => string.Format(ErrorMessage.Required, nameof(OffsetPaginationParams.Take)))
             .InclusiveBetween(0, maxPageSize)
-            .WithMessage($"'{nameof(OffsetPaginationParams.Take)}' must be between 0 and {maxPageSize}.");
+            .WithMessage(_ =>
+                string.Format(ErrorMessage.InvalidRange, nameof(OffsetPaginationParams.Take), maxPageSize));
     }
 }
