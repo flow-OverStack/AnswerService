@@ -42,7 +42,6 @@ public static class Startup
     private const string PrometheusUrlName = "PrometheusUrl";
     private const string UserServiceHealthCheckUrlName = "UserServiceHealthCheckUrl";
     private const string QuestionServiceHealthCheckUrlName = "QuestionServiceHealthCheckUrl";
-    private const string AspireDashboardHealthCheckUrlName = "AspireDashboardHealthCheckUrl";
     private const string JaegerHealthCheckUrlName = "JaegerHealthCheckUrl";
     private const string AppStartupUrlLogName = "AppStartupUrlLog";
     private const string ServiceName = "AnswerService";
@@ -302,7 +301,6 @@ public static class Startup
         var logstashUrl = telemetrySection.GetValue<string>(LogstashUrlName)!;
         var prometheusUrl = telemetrySection.GetValue<string>(PrometheusUrlName)!;
         var jaegerUrl = telemetrySection.GetValue<string>(JaegerHealthCheckUrlName)!;
-        var aspireDashboardUrl = telemetrySection.GetValue<string>(AspireDashboardHealthCheckUrlName)!;
         var userServiceHealthCheckUrl = telemetrySection.GetValue<string>(UserServiceHealthCheckUrlName)!;
         var questionServiceHealthCheck = telemetrySection.GetValue<string>(QuestionServiceHealthCheckUrlName)!;
 
@@ -320,7 +318,6 @@ public static class Startup
             .AddUrlGroup(new Uri(logstashUrl), "logstash")
             .AddUrlGroup(new Uri(keycloakSettings.Host), "keycloak")
             .AddUrlGroup(new Uri(jaegerUrl), "jaeger")
-            .AddUrlGroup(new Uri(aspireDashboardUrl), "aspire")
             .AddUrlGroup(new Uri(userServiceHealthCheckUrl), "user-service")
             .AddUrlGroup(new Uri(questionServiceHealthCheck), "question-service");
     }
