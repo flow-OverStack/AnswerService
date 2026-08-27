@@ -36,7 +36,7 @@
       RedisSettings__Password: ${REDIS_PASSWORD}
       RedisSettings__TimeToLiveInSeconds: 300
   postgres-db:
-    image: postgres:latest
+    image: postgres:17
     container_name: postgres-answer-db
     ports:
       - "5436:5432"
