@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
 using AnswerService.Domain.Interfaces.Provider;
@@ -37,21 +37,14 @@ public class RemoveVoteHandler(
             return BaseResult<VoteAnswerDto>.Failure(ErrorMessage.VoteNotFound, (int)ErrorCodes.VoteNotFound);
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            unitOfWork.Votes.Remove(vote);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityVoteRemoved,
-                cancellationToken);
+        unitOfWork.Votes.Remove(vote);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityVoteRemoved,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var voteAnswerDto = mapper.Map<VoteAnswerDto>(answer);
         return BaseResult<VoteAnswerDto>.Success(voteAnswerDto);

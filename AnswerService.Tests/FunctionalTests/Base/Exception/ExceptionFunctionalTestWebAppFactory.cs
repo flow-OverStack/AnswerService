@@ -2,7 +2,7 @@ using AnswerService.DAL.Repositories;
 using AnswerService.Domain.Interfaces.Database;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Outbox.Interfaces.TopicProducer;
-using AnswerService.Tests.Configurations;
+using AnswerService.Tests.Support;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +43,8 @@ public class ExceptionFunctionalTestWebAppFactory : FunctionalTestWebAppFactory
     {
         var mockResolver = new Mock<ITopicProducerResolver>();
 
-        mockResolver.Setup(x => x.GetProducerForType(It.IsAny<Type>())).Throws(new TestException());
+        mockResolver.Setup(x => x.GetProducerForType(It.IsAny<IServiceProvider>(), It.IsAny<Type>()))
+            .Throws(new TestException());
 
         return mockResolver;
     }

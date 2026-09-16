@@ -1,4 +1,4 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
@@ -18,6 +18,7 @@ public class GetUsersAnswersHandler(IBaseRepository<Domain.Entities.Answer> answ
         var userIds = request.UserIds.ToArray();
 
         var answers = (await answerRepository.GetAll()
+                .AsNoTracking()
                 .Where(x => userIds.Contains(x.UserId))
                 .GroupBy(x => x.UserId)
                 .ToArrayAsync(cancellationToken))

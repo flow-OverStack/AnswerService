@@ -1,24 +1,25 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class RevokeAcceptanceHandlerTests
 {
     private readonly RevokeAcceptanceHandler _revokeAcceptanceHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MockEntityProvidersGetters.GetMockQuestionProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        EntityProviderMocks.GetMockQuestionProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_QuestionAuthorRevokesAcceptedAnswer_ReturnsSuccess()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(2, 3);
@@ -31,9 +32,8 @@ public class RevokeAcceptanceHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(2, 0);
@@ -47,9 +47,8 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(0, 3);
@@ -63,9 +62,8 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_QuestionNotFound()
+    public async Task Handle_AnswerWithNonExistentQuestion_ReturnsQuestionNotFound()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(5, 3);
@@ -79,9 +77,8 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_OperationForbidden()
+    public async Task Handle_NonQuestionAuthorUserId_ReturnsForbidden()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(2, 1);
@@ -95,9 +92,8 @@ public class RevokeAcceptanceHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotAccepted()
+    public async Task Handle_UnacceptedAnswer_ReturnsAnswerNotAccepted()
     {
         //Arrange
         var command = new RevokeAcceptanceCommand(1, 3);

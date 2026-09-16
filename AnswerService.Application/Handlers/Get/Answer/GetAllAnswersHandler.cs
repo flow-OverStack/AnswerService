@@ -2,6 +2,7 @@ using AnswerService.Application.Queries.Answer;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Domain.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace AnswerService.Application.Handlers.Get.Answer;
 
@@ -11,9 +12,7 @@ public class GetAllAnswersHandler(IBaseRepository<Domain.Entities.Answer> answer
     public Task<QueryableResult<Domain.Entities.Answer>> Handle(GetAllAnswersQuery request,
         CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        var answers = answerRepository.GetAll();
+        var answers = answerRepository.GetAll().AsNoTracking();
 
         return Task.FromResult(QueryableResult<Domain.Entities.Answer>.Success(answers));
     }

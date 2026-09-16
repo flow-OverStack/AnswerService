@@ -1,5 +1,5 @@
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Interfaces.Provider;
 using AutoMapper;
 using Grpc.Core;

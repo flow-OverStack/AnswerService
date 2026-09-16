@@ -1,5 +1,7 @@
 using AnswerService.Application.Queries.Answer;
 using AnswerService.Domain.Entities;
+using AnswerService.Domain.Results;
+using AnswerService.GraphQl.DataLoaders.Base;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,24 +11,11 @@ public class AnswerDataLoader(
     IBatchScheduler batchScheduler,
     DataLoaderOptions options,
     IServiceScopeFactory scopeFactory)
-    : BatchDataLoader<long, Answer>(batchScheduler, options)
+    : EntityBatchDataLoader<Answer, long>(batchScheduler, options, scopeFactory)
 {
-    protected override async Task<IReadOnlyDictionary<long, Answer>> LoadBatchAsync(IReadOnlyList<long> keys,
-        CancellationToken cancellationToken)
-    {
-        await using var scope = scopeFactory.CreateAsyncScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        var query = new GetAnswersQuery(keys);
+    protected override Task<CollectionResult<Answer>> FetchAsync(IServiceProvider scopedProvider,
+        IReadOnlyList<long> keys, CancellationToken cancellationToken) =>
+        scopedProvider.GetRequiredService<IMediator>().Send(new GetAnswersQuery(keys), cancellationToken);
 
-        var result = await mediator.Send(query, cancellationToken);
-
-        var dictionary = new Dictionary<long, Answer>();
-
-        if (!result.IsSuccess)
-            return dictionary.AsReadOnly();
-
-        dictionary = result.Data.ToDictionary(x => x.Id, x => x);
-
-        return dictionary.AsReadOnly();
-    }
+    protected override long GetId(Answer entity) => entity.Id;
 }

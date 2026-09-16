@@ -3,5 +3,5 @@ using MediatR;
 
 namespace AnswerService.Application.Queries.Vote;
 
-public record GetAnswersVotesQuery(IEnumerable<long> AnswerIds)
+public record GetAnswersVotesQuery(IReadOnlyCollection<long> AnswerIds)
     : IRequest<CollectionResult<KeyValuePair<long, IEnumerable<Domain.Entities.Vote>>>>;

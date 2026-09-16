@@ -1,20 +1,24 @@
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Traits;
+using AnswerService.Tests.UnitTests.Fixtures;
+using Moq;
+using Serilog;
 using Xunit;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class OutboxBackgroundServiceTests
 {
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task ExecuteBackgroundJob_ShouldBe_NoException()
+    public async Task ExecuteAsync_ScopeFactoryThrows_LogsAndStopsOnCancellation()
     {
         //Arrange
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
         var outboxService =
-            new TestableOutboxBackgroundService(LoggerConfiguration.GetLogger(), null!); // passing null for exception
+            new TestableOutboxBackgroundService(new Mock<ILogger>().Object, null!); // passing null throws
 
         //Act
-        await outboxService.ExecuteAsync();
+        await outboxService.ExecuteAsync(cts.Token);
 
         //Assert
         // If any exception is thrown, the test will fail

@@ -2,14 +2,15 @@ using AnswerService.GraphQl.DataLoaders;
 using AnswerService.Tests.FunctionalTests.Base;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl.DataLoaders;
 
+[FunctionalTest]
 public class VoteTypeDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Success()
+    public async Task LoadAsync_ExistingVoteTypeId_ReturnsVoteType()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
@@ -23,9 +24,8 @@ public class VoteTypeDataLoaderTests(FunctionalTestWebAppFactory factory) : Base
         Assert.NotNull(result);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Null()
+    public async Task LoadAsync_NonExistentVoteTypeId_ReturnsNull()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

@@ -1,23 +1,24 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class DeleteAnswerHandlerTests
 {
     private readonly DeleteAnswerHandler _deleteAnswerHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_OwnerDeletesAnswer_ReturnsSuccess()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 1);
@@ -30,9 +31,8 @@ public class DeleteAnswerHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_NonExistentUserId_ReturnsUserNotFound()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 0);
@@ -46,9 +46,8 @@ public class DeleteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new DeleteAnswerCommand(0, 1);
@@ -62,9 +61,8 @@ public class DeleteAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_OperationForbidden()
+    public async Task Handle_NonOwnerUserId_ReturnsForbidden()
     {
         //Arrange
         var command = new DeleteAnswerCommand(1, 2);

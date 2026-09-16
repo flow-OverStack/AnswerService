@@ -3,17 +3,18 @@ using System.Net.Http.Json;
 using AnswerService.Application.Resources;
 using AnswerService.Tests.FunctionalTests.Base;
 using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
-using AnswerService.Tests.FunctionalTests.Helper;
+using AnswerService.Tests.FunctionalTests.Helpers;
 using Newtonsoft.Json;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl;
 
+[FunctionalTest]
 public class GraphQlTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAll_ShouldBe_Success()
+    public async Task GetAll_NoFilters_ReturnsAnswersVotesAndVoteTypes()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestAllQuery };
@@ -41,9 +42,8 @@ public class GraphQlTests(FunctionalTestWebAppFactory factory) : BaseFunctionalT
         Assert.NotEqual(0, result.Data.AnswerVoteTypes.TotalCount);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAll_ShouldBe_InvalidPaginationError()
+    public async Task GetAll_InvalidPaginationArguments_ReturnsValidationErrors()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestWithInvalidPaginationQuery };
@@ -59,9 +59,8 @@ public class GraphQlTests(FunctionalTestWebAppFactory factory) : BaseFunctionalT
         Assert.All(result.Errors, x => Assert.StartsWith(ErrorMessage.InvalidPagination, x.Message));
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAllByIds_ShouldBe_Success()
+    public async Task GetAllByIds_ExistingIds_ReturnsAnswerVoteAndVoteType()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestAllByIdsQuery(1, 1, 3, 1) };
@@ -78,9 +77,8 @@ public class GraphQlTests(FunctionalTestWebAppFactory factory) : BaseFunctionalT
         Assert.NotNull(result.Data.AnswerVoteType);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task GetAllByIds_ShouldBe_Null()
+    public async Task GetAllByIds_NonExistentIds_ReturnsNull()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestAllByIdsQuery(0, 0, 0, 0) };
@@ -97,9 +95,8 @@ public class GraphQlTests(FunctionalTestWebAppFactory factory) : BaseFunctionalT
         Assert.Null(result.Data.AnswerVoteType);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task RequestWithWrongArgument_ShouldBe_Error()
+    public async Task Request_WrongArgument_ReturnsBadRequestError()
     {
         //Arrange
         var requestBody = new { query = GraphQlHelper.RequestWithWrongArgument };

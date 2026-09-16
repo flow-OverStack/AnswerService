@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Entities;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
@@ -35,23 +35,15 @@ public class DeleteAnswerHandler(
             return BaseResult<AnswerDto>.Failure(ErrorMessage.OperationForbidden, (int)ErrorCodes.OperationForbidden);
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            answer.Enabled = false;
-            unitOfWork.Answers.Update(answer);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityDeleted,
-                cancellationToken);
+        answer.Enabled = false;
+        unitOfWork.Answers.Update(answer);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityDeleted,
+            cancellationToken);
 
+        await transaction.CommitAsync(cancellationToken);
 
         var answerDto = mapper.Map<AnswerDto>(answer);
         return BaseResult<AnswerDto>.Success(answerDto);

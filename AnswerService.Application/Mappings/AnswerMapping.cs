@@ -1,5 +1,5 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Domain.Dto.Answer;
+using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Entities;
 using AutoMapper;
 

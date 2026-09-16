@@ -22,6 +22,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
+using Serilog.Events;
 using Path = System.IO.Path;
 
 namespace AnswerService.Api;
@@ -41,7 +42,6 @@ public static class Startup
     private const string PrometheusUrlName = "PrometheusUrl";
     private const string UserServiceHealthCheckUrlName = "UserServiceHealthCheckUrl";
     private const string QuestionServiceHealthCheckUrlName = "QuestionServiceHealthCheckUrl";
-    private const string AspireDashboardHealthCheckUrlName = "AspireDashboardHealthCheckUrl";
     private const string JaegerHealthCheckUrlName = "JaegerHealthCheckUrl";
     private const string AppStartupUrlLogName = "AppStartupUrlLog";
     private const string ServiceName = "AnswerService";
@@ -57,27 +57,30 @@ public static class Startup
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            var keycloakSettings =
-                services.BuildServiceProvider().GetRequiredService<IOptions<KeycloakSettings>>().Value;
+        }).AddJwtBearer();
 
-            options.RequireHttpsMetadata = false;
-            options.MetadataAddress = keycloakSettings.MetadataAddress;
-            options.Audience = keycloakSettings.Audience;
-
-            // Maintains original OAuth2 claims for reliable microservice communication.
-            options.MapInboundClaims = false;
-
-            options.TokenValidationParameters = new TokenValidationParameters
+        services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+            .Configure<IOptions<KeycloakSettings>>((options, keycloakOptions) =>
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                NameClaimType = JwtRegisteredClaimNames.PreferredUsername
-            };
-        });
+                var keycloakSettings = keycloakOptions.Value;
+
+                options.RequireHttpsMetadata = false;
+                options.MetadataAddress = keycloakSettings.MetadataAddress;
+                options.Audience = keycloakSettings.Audience;
+
+                // Maintains original OAuth2 claims for reliable microservice communication.
+                options.MapInboundClaims = false;
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    NameClaimType = JwtRegisteredClaimNames.PreferredUsername
+                };
+            });
+
         services.AddAuthorization();
     }
 
@@ -298,7 +301,6 @@ public static class Startup
         var logstashUrl = telemetrySection.GetValue<string>(LogstashUrlName)!;
         var prometheusUrl = telemetrySection.GetValue<string>(PrometheusUrlName)!;
         var jaegerUrl = telemetrySection.GetValue<string>(JaegerHealthCheckUrlName)!;
-        var aspireDashboardUrl = telemetrySection.GetValue<string>(AspireDashboardHealthCheckUrlName)!;
         var userServiceHealthCheckUrl = telemetrySection.GetValue<string>(UserServiceHealthCheckUrlName)!;
         var questionServiceHealthCheck = telemetrySection.GetValue<string>(QuestionServiceHealthCheckUrlName)!;
 
@@ -316,7 +318,6 @@ public static class Startup
             .AddUrlGroup(new Uri(logstashUrl), "logstash")
             .AddUrlGroup(new Uri(keycloakSettings.Host), "keycloak")
             .AddUrlGroup(new Uri(jaegerUrl), "jaeger")
-            .AddUrlGroup(new Uri(aspireDashboardUrl), "aspire")
             .AddUrlGroup(new Uri(userServiceHealthCheckUrl), "user-service")
             .AddUrlGroup(new Uri(questionServiceHealthCheck), "question-service");
     }
@@ -346,6 +347,25 @@ public static class Startup
                 builder.AllowAnyMethod()
                     .AllowAnyHeader();
             });
+        });
+    }
+
+    /// <summary>
+    ///     Configures Serilog's per-request logging middleware, escalating the log level based on the response
+    ///     status code and any unhandled exception.
+    /// </summary>
+    /// <param name="app">The web application to which the request logging middleware is added.</param>
+    public static void UseRequestLogging(this WebApplication app)
+    {
+        app.UseSerilogRequestLogging(options =>
+        {
+            options.GetLevel = (httpContext, _, ex) => httpContext.Response.StatusCode switch
+            {
+                _ when ex is not null => LogEventLevel.Error,
+                >= 500 => LogEventLevel.Error,
+                >= 400 => LogEventLevel.Warning,
+                _ => LogEventLevel.Information
+            };
         });
     }
 

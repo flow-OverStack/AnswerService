@@ -2,11 +2,12 @@ using AnswerService.Cache.Helpers;
 using AnswerService.Cache.Interfaces;
 using AnswerService.Cache.Repositories.Base;
 using AnswerService.Cache.Settings;
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.Domain.Entities;
 using AnswerService.Domain.Interfaces.Provider;
 using AnswerService.Domain.Interfaces.Repository.Cache;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace AnswerService.Cache.Repositories;
 
@@ -14,24 +15,25 @@ public class VoteCacheRepository : IVoteCacheRepository
 {
     private const string VoteValuePattern = "{0},{1}";
 
-    private readonly IBaseCacheRepository<Vote, VoteDto> _repository;
+    private readonly IBaseCacheRepository<Vote, VoteKey> _repository;
 
-    public VoteCacheRepository(ICacheProvider cacheProvider, IOptions<RedisSettings> redisSettings)
+    public VoteCacheRepository(ICacheProvider cacheProvider, IOptions<RedisSettings> redisSettings, ILogger logger)
     {
         var settings = redisSettings.Value;
-        _repository = new BaseCacheRepository<Vote, VoteDto>(
+        _repository = new BaseCacheRepository<Vote, VoteKey>(
             cacheProvider,
             new VoteCacheMapping(),
             settings.TimeToLiveInSeconds,
-            settings.NullTimeToLiveInSeconds
+            settings.NullTimeToLiveInSeconds,
+            logger
         );
     }
 
-    public Task<IEnumerable<Vote>> GetByDtosAsync(IEnumerable<VoteDto> dtos,
-        Func<IEnumerable<VoteDto>, CancellationToken, Task<IEnumerable<Vote>>> fetch,
+    public Task<IEnumerable<Vote>> GetByUserAndAnswerAsync(IEnumerable<VoteKey> keys,
+        Func<IEnumerable<VoteKey>, CancellationToken, Task<IEnumerable<Vote>>> fetch,
         CancellationToken cancellationToken = default)
     {
-        return _repository.GetByIdsOrFetchAndCacheAsync(dtos, fetch, cancellationToken);
+        return _repository.GetByIdsOrFetchAndCacheAsync(keys, fetch, cancellationToken);
     }
 
     public Task<IEnumerable<KeyValuePair<long, IEnumerable<Vote>>>> GetAnswersVotesAsync(
@@ -75,14 +77,14 @@ public class VoteCacheRepository : IVoteCacheRepository
             cancellationToken);
     }
 
-    private sealed class VoteCacheMapping : ICacheEntityMapping<Vote, VoteDto>
+    private sealed class VoteCacheMapping : ICacheEntityMapping<Vote, VoteKey>
     {
-        public VoteDto GetId(Vote entity)
+        public VoteKey GetId(Vote entity)
         {
-            return new VoteDto(entity.AnswerId, entity.UserId);
+            return new VoteKey(entity.AnswerId, entity.UserId);
         }
 
-        public string GetKey(VoteDto id)
+        public string GetKey(VoteKey id)
         {
             return CacheKeyHelper.GetVoteKey(id.AnswerId, id.UserId);
         }
@@ -92,7 +94,7 @@ public class VoteCacheRepository : IVoteCacheRepository
             return string.Format(VoteValuePattern, entity.AnswerId, entity.UserId);
         }
 
-        public VoteDto ParseIdFromKey(string key)
+        public VoteKey ParseIdFromKey(string key)
         {
             var ex = new ArgumentException($"Invalid key format: {key}");
 
@@ -105,10 +107,10 @@ public class VoteCacheRepository : IVoteCacheRepository
                 throw ex;
 
             var ids = parts.Select(long.Parse).ToArray();
-            return new VoteDto(ids[0], ids[1]);
+            return new VoteKey(ids[0], ids[1]);
         }
 
-        public VoteDto ParseIdFromValue(string value)
+        public VoteKey ParseIdFromValue(string value)
         {
             var parts = value.Split(',');
             if (parts.Length < 2)
@@ -116,7 +118,7 @@ public class VoteCacheRepository : IVoteCacheRepository
 
             var ids = parts.Select(long.Parse).ToArray();
 
-            return new VoteDto(ids[0], ids[1]);
+            return new VoteKey(ids[0], ids[1]);
         }
     }
 }

@@ -1,4 +1,4 @@
-using AnswerService.Domain.Dto.Answer;
+using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Results;
 using MediatR;
 

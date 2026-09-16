@@ -1,7 +1,6 @@
 using System.Reflection;
 using AnswerService.Application.Behaviours;
 using AnswerService.Application.Mappings;
-using AnswerService.Domain.Results;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,25 +11,14 @@ public static class DependencyInjection
 {
     public static void AddApplication(this IServiceCollection services)
     {
+        var assembly = Assembly.GetExecutingAssembly();
+
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddAutoMapper(typeof(AnswerMapping));
-        services.AddMediatR();
-        services.AddValidators();
-        services.AddCacheHandlerDecorators(Assembly.GetExecutingAssembly());
-    }
-
-    private static void AddMediatR(this IServiceCollection services)
-    {
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.RegisterBaseResultValidationBehaviors(typeof(ValidationBehavior<,>), Assembly.GetExecutingAssembly());
-        });
-    }
-
-    private static void AddValidators(this IServiceCollection services)
-    {
-        services.AddScopedValidatorsForAssignableValidatedTypes(Assembly.GetExecutingAssembly());
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddScopedValidatorsForAssignableValidatedTypes(assembly);
+        services.AddCacheHandlerDecorators(assembly);
     }
 
     private static void AddCacheHandlerDecorators(this IServiceCollection services, Assembly assembly)
@@ -78,45 +66,6 @@ public static class DependencyInjection
         }
     }
 
-    private static void RegisterBaseResultValidationBehaviors(this MediatRServiceConfiguration cfg,
-        Type behaviorOpenType, Assembly assembly)
-    {
-        var handlerOpenType = typeof(IRequestHandler<,>);
-        var baseResultOpenType = typeof(BaseResult<>);
-        var pipelineOpenType = typeof(IPipelineBehavior<,>);
-
-        if (!IsValidBaseResultBehavior(behaviorOpenType, pipelineOpenType, baseResultOpenType))
-            throw new ArgumentException(
-                $"The provided behavior type {behaviorOpenType.FullName} is not a valid open generic type implementing `IPipelineBehavior<TRequest, BaseResult<TResponse>>`.",
-                nameof(behaviorOpenType));
-
-        var allTypes = assembly.DefinedTypes
-            .Select(x => x.AsType())
-            .Where(x => x is { IsAbstract: false, IsInterface: false });
-
-        var handlerInterfaces = allTypes
-            .SelectMany(x => x.GetInterfaces())
-            .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == handlerOpenType);
-
-        foreach (var handlerInterface in handlerInterfaces)
-        {
-            var genericArgs = handlerInterface.GetGenericArguments();
-            var requestType = genericArgs[0];
-            var responseType = genericArgs[1];
-
-            if (!responseType.IsGenericType || responseType.GetGenericTypeDefinition() != baseResultOpenType) continue;
-
-            var innerResponseType = responseType.GetGenericArguments()[0];
-
-            // Register:
-            // IPipelineBehavior<TRequest, BaseResult<TInner>>  ->  ValidationBehavior<TRequest, TInner>
-            var serviceType = pipelineOpenType.MakeGenericType(requestType, responseType);
-            var implementationType = behaviorOpenType.MakeGenericType(requestType, innerResponseType);
-
-            cfg.AddBehavior(serviceType, implementationType);
-        }
-    }
-
     private static void AddHandlerDecoratorsFromNamespace(
         this IServiceCollection services, Assembly assembly, string namespaceSegment)
     {
@@ -152,26 +101,5 @@ public static class DependencyInjection
                 services.Decorate(handlerInterface, decoratorType);
             }
         }
-    }
-
-    private static bool IsValidBaseResultBehavior(Type behaviorOpenType, Type pipelineOpenType, Type baseResultOpenType)
-    {
-        if (!behaviorOpenType.IsGenericTypeDefinition) return false;
-
-        var typeParams = behaviorOpenType.GetGenericArguments();
-        if (typeParams.Length != 2) return false;
-
-
-        // For an open generic type, GetInterfaces() returns interfaces with
-        // the type parameters still substituted as-is (e.g., IPipelineBehavior<T0, BaseResult<T1>>),
-        // allowing structural shape validation without any concrete types.
-        return behaviorOpenType.GetInterfaces().Any(i =>
-            i.IsGenericType &&
-            i.GetGenericTypeDefinition() == pipelineOpenType &&
-            i.GetGenericArguments() is [var reqArg, var resArg] &&
-            reqArg == typeParams[0] &&
-            resArg.IsGenericType &&
-            resArg.GetGenericTypeDefinition() == baseResultOpenType &&
-            resArg.GetGenericArguments()[0] == typeParams[1]);
     }
 }

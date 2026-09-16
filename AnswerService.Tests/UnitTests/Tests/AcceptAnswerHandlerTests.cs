@@ -1,27 +1,28 @@
 using AnswerService.Application.Commands.AnswerCommands;
 using AnswerService.Application.Handlers;
 using AnswerService.Application.Resources;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class AcceptAnswerHandlerTests
 {
     private readonly AcceptAnswerHandler _acceptAnswerHandler = new(
-        MockRepositoriesGetters.GetMockUnitOfWork().Object,
-        MockEntityProvidersGetters.GetMockUserProvider().Object,
-        MockEntityProvidersGetters.GetMockQuestionProvider().Object,
-        BaseEventProducerConfiguration.GetBaseEventProducerConfiguration(),
-        MapperConfiguration.GetMapperConfiguration());
+        RepositoryMocks.GetMockUnitOfWork().Object,
+        EntityProviderMocks.GetMockUserProvider().Object,
+        EntityProviderMocks.GetMockQuestionProvider().Object,
+        BaseEventProducerFixture.GetBaseEventProducerConfiguration(),
+        MapperFixture.GetMapperConfiguration());
 
     // Methods that reach ExecuteUpdateAsync are not tested here
     // Because ExecuteUpdateAsync cannot be mocked
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_UserNotFound()
+    public async Task Handle_UserDoesNotExist_ReturnsUserNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(3, 0);
@@ -35,9 +36,8 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerNotFound()
+    public async Task Handle_AnswerDoesNotExist_ReturnsAnswerNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(0, 4);
@@ -51,9 +51,8 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_QuestionNotFound()
+    public async Task Handle_QuestionDoesNotExist_ReturnsQuestionNotFound()
     {
         //Arrange
         var command = new AcceptAnswerCommand(5, 4);
@@ -67,9 +66,8 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_OperationForbidden()
+    public async Task Handle_InitiatorNotQuestionAuthor_ReturnsOperationForbidden()
     {
         //Arrange
         var command = new AcceptAnswerCommand(1, 1);
@@ -83,9 +81,8 @@ public class AcceptAnswerHandlerTests
         Assert.Null(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_AnswerAlreadyAccepted()
+    public async Task Handle_AnswerAlreadyAcceptedForQuestion_ReturnsAnswerAlreadyAccepted()
     {
         //Arrange
         var command = new AcceptAnswerCommand(2, 3);

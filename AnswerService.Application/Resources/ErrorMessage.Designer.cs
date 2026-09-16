@@ -112,7 +112,25 @@ namespace AnswerService.Application.Resources {
                 return ResourceManager.GetString("CannotVoteForOwnPost", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; contains a null element..
+        /// </summary>
+        public static string CollectionContainsNullElement {
+            get {
+                return ResourceManager.GetString("CollectionContainsNullElement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You must specify either &apos;{0}&apos; (optionally with &apos;{1}&apos;), without &apos;{2}&apos; and &apos;{3}&apos;, or &apos;{2}&apos; (optionally with &apos;{3}&apos;), without &apos;{0}&apos; and &apos;{1}&apos;..
+        /// </summary>
+        public static string ConflictingPaginationArguments {
+            get {
+                return ResourceManager.GetString("ConflictingPaginationArguments", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Internal server error.
         /// </summary>
@@ -130,16 +148,52 @@ namespace AnswerService.Application.Resources {
                 return ResourceManager.GetString("InvalidAnswerBody", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Pagination parametrs are invalid.
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be a valid base64 string..
+        /// </summary>
+        public static string InvalidCursorFormat {
+            get {
+                return ResourceManager.GetString("InvalidCursorFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be greater than or equal to {1}..
+        /// </summary>
+        public static string InvalidMinValue {
+            get {
+                return ResourceManager.GetString("InvalidMinValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Order direction must be a valid enum value..
+        /// </summary>
+        public static string InvalidOrderDirection {
+            get {
+                return ResourceManager.GetString("InvalidOrderDirection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pagination parameters are invalid.
         /// </summary>
         public static string InvalidPagination {
             get {
                 return ResourceManager.GetString("InvalidPagination", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be between 0 and {1}..
+        /// </summary>
+        public static string InvalidRange {
+            get {
+                return ResourceManager.GetString("InvalidRange", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Operation forbidden.
         /// </summary>
@@ -148,7 +202,25 @@ namespace AnswerService.Application.Resources {
                 return ResourceManager.GetString("OperationForbidden", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Order direction must be specified..
+        /// </summary>
+        public static string OrderDirectionRequired {
+            get {
+                return ResourceManager.GetString("OrderDirectionRequired", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Order field must not be empty..
+        /// </summary>
+        public static string OrderFieldRequired {
+            get {
+                return ResourceManager.GetString("OrderFieldRequired", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to This question already has accepted answer.
         /// </summary>
@@ -175,7 +247,25 @@ namespace AnswerService.Application.Resources {
                 return ResourceManager.GetString("QuestionsNotFound", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must be provided..
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; must not be empty..
+        /// </summary>
+        public static string RequiredNonEmpty {
+            get {
+                return ResourceManager.GetString("RequiredNonEmpty", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Too low reputation.
         /// </summary>

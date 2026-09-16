@@ -4,26 +4,30 @@ using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Cache.Providers;
 using AnswerService.Cache.Repositories;
-using AnswerService.Tests.Configurations;
-using AnswerService.Tests.UnitTests.Configurations;
+using AnswerService.Tests.Mocks;
+using AnswerService.Tests.Traits;
+using AnswerService.Tests.UnitTests.Fixtures;
 using Microsoft.Extensions.Options;
+using Moq;
+using Serilog;
 using Xunit;
 
 namespace AnswerService.Tests.UnitTests.Tests;
 
+[UnitTest]
 public class GetAnswersVotesHandlerTests
 {
     private readonly CacheGetAnswersVotesHandler _handler = new(
         new VoteCacheRepository(
-            new RedisCacheProvider(RedisDatabaseConfiguration.GetRedisDatabaseConfiguration()),
-            Options.Create(RedisSettingsConfiguration.GetRedisSettingsConfiguration())),
+            new RedisCacheProvider(RedisDatabaseFixture.GetRedisDatabaseConfiguration()),
+            Options.Create(RedisSettingsFixture.GetRedisSettingsConfiguration()),
+            new Mock<ILogger>().Object),
         new GetAnswersVotesHandler(
-            MockRepositoriesGetters.GetMockVoteRepository().Object)
+            RepositoryMocks.GetMockVoteRepository().Object)
     );
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_Success()
+    public async Task Handle_ExistingAndNonExistentAnswerIds_ReturnsSuccess()
     {
         //Arrange
         var query = new GetAnswersVotesQuery([1, 2, 0]);
@@ -36,9 +40,8 @@ public class GetAnswersVotesHandlerTests
         Assert.NotNull(result.Data);
     }
 
-    [Trait("Category", "Unit")]
     [Fact]
-    public async Task Handle_ShouldBe_VotesNotFound()
+    public async Task Handle_NonExistentAnswerId_ReturnsVotesNotFound()
     {
         //Arrange
         var query = new GetAnswersVotesQuery([0]);

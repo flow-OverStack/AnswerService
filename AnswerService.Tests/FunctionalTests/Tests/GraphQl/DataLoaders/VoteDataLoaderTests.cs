@@ -1,40 +1,40 @@
-using AnswerService.Domain.Dto.Vote;
+using AnswerService.Domain.Dtos.Vote;
 using AnswerService.GraphQl.DataLoaders;
 using AnswerService.Tests.FunctionalTests.Base;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests.GraphQl.DataLoaders;
 
+[FunctionalTest]
 public class VoteDataLoaderTests(FunctionalTestWebAppFactory factory) : BaseFunctionalTest(factory)
 {
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Success()
+    public async Task LoadAsync_ExistingVoteKey_ReturnsVote()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
         var dataLoader = scope.ServiceProvider.GetRequiredService<VoteDataLoader>();
-        var dto = new VoteDto(3, 1);
+        var key = new VoteKey(3, 1);
 
         //Act
-        var result = await dataLoader.LoadAsync(dto);
+        var result = await dataLoader.LoadAsync(key);
 
         //Assert
         Assert.NotNull(result);
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task Load_ShouldBe_Null()
+    public async Task LoadAsync_NonExistentVoteKey_ReturnsNull()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();
         var dataLoader = scope.ServiceProvider.GetRequiredService<VoteDataLoader>();
-        var dto = new VoteDto(0, 0);
+        var key = new VoteKey(0, 0);
 
         //Act
-        var result = await dataLoader.LoadAsync(dto);
+        var result = await dataLoader.LoadAsync(key);
 
         //Assert
         Assert.Null(result);

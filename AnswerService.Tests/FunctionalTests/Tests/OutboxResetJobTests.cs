@@ -6,9 +6,11 @@ using AnswerService.Tests.FunctionalTests.Base.Outboxless;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
+[FunctionalTest]
 public class OutboxResetJobTests : OutboxlessFunctionalTest
 {
     public OutboxResetJobTests(OutboxlessFunctionalTestWebAppFactory factory) : base(factory)
@@ -18,9 +20,8 @@ public class OutboxResetJobTests : OutboxlessFunctionalTest
         outboxRepository.GetAll().ExecuteDelete();
     }
 
-    [Trait("Category", "Functional")]
     [Fact]
-    public async Task RunOutboxResetJob_ShouldBe_Ok()
+    public async Task RunAsync_MixedProcessedDeadAndFailedMessages_RemovesStaleProcessedMessages()
     {
         //Arrange
         await using var scope = ServiceProvider.CreateAsyncScope();

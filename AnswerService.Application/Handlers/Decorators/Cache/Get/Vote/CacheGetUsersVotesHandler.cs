@@ -1,4 +1,4 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository.Cache;
@@ -18,7 +18,7 @@ public class CacheGetUsersVotesHandler(
     {
         var idsArray = request.UserIds.ToArray();
         var votes = (await cacheRepository.GetUsersVotesAsync(idsArray,
-            async (idsToFetch, ct) => (await inner.Handle(new GetUsersVotesQuery(idsToFetch), ct)).Data ?? [],
+            async (idsToFetch, ct) => (await inner.Handle(new GetUsersVotesQuery(idsToFetch.ToArray()), ct)).Data ?? [],
             cancellationToken)).ToArray();
 
         if (votes.Length == 0)

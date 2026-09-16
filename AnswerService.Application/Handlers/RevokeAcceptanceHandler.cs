@@ -1,8 +1,8 @@
 using AnswerService.Application.Commands.AnswerCommands;
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Resources;
-using AnswerService.Domain.Dto.Answer;
-using AnswerService.Domain.Dto.ExternalEntity;
+using AnswerService.Domain.Dtos.Answer;
+using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Enums;
 using AnswerService.Domain.Interfaces.Producer;
 using AnswerService.Domain.Interfaces.Provider;
@@ -45,23 +45,16 @@ public class RevokeAcceptanceHandler(
 
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            answer.IsAccepted = false;
-            unitOfWork.Answers.Update(answer);
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+        answer.IsAccepted = false;
+        unitOfWork.Answers.Update(answer);
 
-            await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAcceptanceRevoked,
-                cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await transaction.CommitAsync(cancellationToken);
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        await producer.ProduceAsync(answer.UserId, initiator.Id, answer.Id, BaseEventType.EntityAcceptanceRevoked,
+            cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
 
         var answerDto = mapper.Map<AnswerDto>(answer);
         return BaseResult<AnswerDto>.Success(answerDto);

@@ -6,6 +6,7 @@ using AnswerService.Domain.Entities;
 using AnswerService.Domain.Interfaces.Provider;
 using AnswerService.Domain.Interfaces.Repository.Cache;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace AnswerService.Cache.Repositories;
 
@@ -13,14 +14,15 @@ public class VoteTypeCacheRepository : IVoteTypeCacheRepository
 {
     private readonly IBaseCacheRepository<VoteType, long> _repository;
 
-    public VoteTypeCacheRepository(ICacheProvider cacheProvider, IOptions<RedisSettings> redisSettings)
+    public VoteTypeCacheRepository(ICacheProvider cacheProvider, IOptions<RedisSettings> redisSettings, ILogger logger)
     {
         var settings = redisSettings.Value;
         _repository = new BaseCacheRepository<VoteType, long>(
             cacheProvider,
             new CacheVoteTypeMapping(),
             settings.TimeToLiveInSeconds,
-            settings.NullTimeToLiveInSeconds
+            settings.NullTimeToLiveInSeconds,
+            logger
         );
     }
 

@@ -1,4 +1,4 @@
-using AnswerService.Application.Enum;
+using AnswerService.Application.Enums;
 using AnswerService.Application.Queries.Vote;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Interfaces.Repository;
@@ -18,6 +18,7 @@ public class GetVoteTypesVotesHandler(IBaseRepository<Domain.Entities.Vote> vote
         var voteTypeIds = request.VoteTypeIds.ToArray();
 
         var votes = (await voteRepository.GetAll()
+                .AsNoTracking()
                 .Where(x => voteTypeIds.Contains(x.VoteTypeId))
                 .GroupBy(x => x.VoteTypeId)
                 .ToArrayAsync(cancellationToken))
