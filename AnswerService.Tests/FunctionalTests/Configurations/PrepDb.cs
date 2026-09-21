@@ -10,6 +10,11 @@ internal static class PrepDb
 {
     public static void PrepPopulation(this IServiceScope serviceScope)
     {
+        var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        dbContext.Database.EnsureDeleted();
+        dbContext.Database.Migrate();
+
         var answers = AnswerMother.GetAnswers()
             .Select(x => new Answer
             {
@@ -19,20 +24,16 @@ internal static class PrepDb
                 UserId = x.UserId,
                 IsAccepted = x.IsAccepted
             });
-
         var votes = VoteMother.GetVotes().ToList();
         var voteTypes = VoteTypeMother.GetVoteTypes().ToList();
 
         voteTypes.ForEach(x => x.Id = 0);
+        dbContext.Set<VoteType>().AddRange(voteTypes);
+        dbContext.SaveChanges();
+
         votes.ForEach(x => x.VoteType = null!);
 
-        var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.Migrate();
-
         dbContext.Set<Answer>().AddRange(answers);
-        dbContext.Set<VoteType>().AddRange(voteTypes);
         dbContext.Set<Vote>().AddRange(votes);
 
         dbContext.SaveChanges();
