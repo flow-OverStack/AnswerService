@@ -1,14 +1,16 @@
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using AnswerService.Application.Resources;
 using AnswerService.Domain.Dtos.Answer;
 using AnswerService.Domain.Dtos.ExternalEntity;
 using AnswerService.Domain.Results;
 using AnswerService.Tests.FunctionalTests.Base.Exception;
+using AnswerService.Tests.FunctionalTests.Configurations.GraphQl.Responses;
 using AnswerService.Tests.FunctionalTests.Helpers;
+using AnswerService.Tests.Traits;
 using Newtonsoft.Json;
 using Xunit;
-using AnswerService.Tests.Traits;
 
 namespace AnswerService.Tests.FunctionalTests.Tests;
 
@@ -132,5 +134,25 @@ public class ExceptionTests : ExceptionFunctionalTest
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
         Assert.False(result!.IsSuccess);
         Assert.StartsWith(ErrorMessage.InternalServerError, result.ErrorMessage);
+    }
+
+    [Fact]
+    public async Task GetAnswerById_CacheReadFailure_ReturnsOk()
+    {
+        //Arrange
+        var requestBody = new { query = GraphQlHelper.RequestAnswerByIdQuery(2) };
+
+        //Act
+        // 1st request fetches data from DB
+        await HttpClient.PostAsJsonAsync(GraphQlHelper.GraphQlEndpoint, requestBody);
+        // 2nd request fetches data from cache
+        var response = await HttpClient.PostAsJsonAsync(GraphQlHelper.GraphQlEndpoint, requestBody);
+        var body = await response.Content.ReadAsStringAsync();
+        var result = JsonConvert.DeserializeObject<GraphQlGetAllByIdsResponse>(body);
+
+        //Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(result!.Data.Answer);
+        Assert.NotNull(result.Data.Answer.Votes);
     }
 }

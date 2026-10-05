@@ -1,5 +1,6 @@
 using AnswerService.DAL.Repositories;
 using AnswerService.Domain.Interfaces.Database;
+using AnswerService.Domain.Interfaces.Provider;
 using AnswerService.Domain.Interfaces.Repository;
 using AnswerService.Outbox.Interfaces.TopicProducer;
 using AnswerService.Tests.Support;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
+using RedisException = StackExchange.Redis.RedisException;
 
 namespace AnswerService.Tests.FunctionalTests.Base.Exception;
 
@@ -37,6 +39,24 @@ public class ExceptionFunctionalTestWebAppFactory : FunctionalTestWebAppFactory
         mockUnitOfWork.Setup(x => x.Votes).Returns(originalUnitOfWork.Votes);
 
         return mockUnitOfWork;
+    }
+
+    private static IMock<ICacheProvider> GetExceptionMockCacheProvider()
+    {
+        var mockDatabase = new Mock<ICacheProvider>();
+
+        mockDatabase.Setup(x => x.GetNullKeysAsync(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new RedisException(TestException.ErrorMessage));
+
+        mockDatabase.Setup(x => x.StringSetAsync(It.IsAny<IEnumerable<KeyValuePair<string, It.IsAnyType>>>(),
+                It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new RedisException(TestException.ErrorMessage));
+
+        mockDatabase.Setup(x =>
+                x.GetJsonParsedAsync<It.IsAnyType>(It.IsAny<IEnumerable<string>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new RedisException(TestException.ErrorMessage));
+
+        return mockDatabase;
     }
 
     private static IMock<ITopicProducerResolver> GetExceptionTopicProducerResolver()
@@ -71,6 +91,13 @@ public class ExceptionFunctionalTestWebAppFactory : FunctionalTestWebAppFactory
                 var exceptionTopicProducerResolver = GetExceptionTopicProducerResolver().Object;
 
                 return exceptionTopicProducerResolver;
+            });
+
+            services.RemoveAll<ICacheProvider>();
+            services.AddScoped<ICacheProvider>(_ =>
+            {
+                var exceptionRedisDatabase = GetExceptionMockCacheProvider().Object;
+                return exceptionRedisDatabase;
             });
         });
     }
